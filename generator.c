@@ -1,4 +1,4 @@
-#include "BearSSL/bearssl.h"
+#include "BearSSL/inc/bearssl.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -17,9 +17,8 @@ void printKeysToFile(br_rsa_private_key* pk, br_rsa_public_key* pbk, int counter
         fprintf(file, "%02hhX", pk->q[i]);
     }
     fprintf(file,";");
-    fprintf(file,"%ld.%09ld\n", (long)(t2.tv_sec - t1.tv_sec),
+    fprintf(file,"%ld.%09ld;\n", (long)(t2.tv_sec - t1.tv_sec),
            t2.tv_nsec - t1.tv_nsec);
-    fprintf(file,"\n");
 }
 void generateRSA(int number, unsigned int bits) {
     //prepare PRNG
