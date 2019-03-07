@@ -17,8 +17,9 @@ void printKeysToFile(br_rsa_private_key* pk, br_rsa_public_key* pbk, int counter
         fprintf(file, "%02hhX", pk->q[i]);
     }
     fprintf(file,";");
-    fprintf(file,"%ld.%09ld;\n", (long)(t2.tv_sec - t1.tv_sec),
-           t2.tv_nsec - t1.tv_nsec);
+    fprintf(file,"%.5f\n;",
+           ((double)t2.tv_sec + 1.0e-9*t2.tv_nsec) - 
+           ((double)t1.tv_sec + 1.0e-9*t1.tv_nsec));
 }
 void generateRSA(int number, unsigned int bits) {
     //prepare PRNG
@@ -43,16 +44,12 @@ void generateRSA(int number, unsigned int bits) {
     unsigned char buffer_pub[BR_RSA_KBUF_PUB_SIZE(bits)];
     FILE* file = fopen(filename, "w");
     clock_t timer = clock();
-    struct timespec t1, t2;
+    struct timespec tstart={0,0}, tend={0,0};
     for (int i = 0; i < number; i++) {
-        clock_gettime(CLOCK_REALTIME, &t1);
+	clock_gettime(CLOCK_MONOTONIC, &tstart);
         keygen(&ctx.vtable, &pk, buffer_priv, &pbk, buffer_pub, bits, 0);
-        clock_gettime(CLOCK_REALTIME, &t2);
-        if (t2.tv_nsec < t1.tv_nsec) {
-            t2.tv_nsec += 1000000000;
-            t2.tv_sec--;
-        }
-        printKeysToFile(&pk,&pbk,i,file, t1, t2);
+	clock_gettime(CLOCK_MONOTONIC, &tend);
+        printKeysToFile(&pk,&pbk,i,file, tstart, tend);
     }
     fclose(file);
 
@@ -60,8 +57,8 @@ void generateRSA(int number, unsigned int bits) {
 
 
 int main(int argc, char * argv[]) {
-    generateRSA(1000000,512);
-    generateRSA(10000,1024);
-    generateRSA(10000,2048);
+    generateRSA(100,512);
+    generateRSA(100,1024);
+    generateRSA(100,2048);
     return 0;
 }	
