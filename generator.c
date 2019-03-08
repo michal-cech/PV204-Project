@@ -104,13 +104,12 @@ void generateRSA(int number, unsigned int bits) {
 
 void printECCKeysToFile(br_ec_private_key *pk, br_ec_public_key * pbk, int counter,FILE * file, struct timespec t1, struct timespec t2) {
     fprintf(file, "%d;", counter);
-    for (size_t i = 0 ; i < pk->xlen; i ++) {
-        fprintf(file,"%02hhX", pk->x[i]);
-    }
-    fprintf(file, ";");
-
     for (size_t i = 0; i < pbk->qlen; i++) {
         fprintf(file,"%02hhX", pbk->q[i]);
+    }
+    fprintf(file, ";");
+    for (size_t i = 0 ; i < pk->xlen; i ++) {
+        fprintf(file,"%02hhX", pk->x[i]);
     }
     fprintf(file,";");
     fprintf(file,"%.5f ns;\n",
@@ -155,6 +154,6 @@ int main(int argc, char * argv[]) {
     // generateRSA(10,512);
  //   generateRSA(10,1024);
   //  generateRSA(10,2048);
-    generateECC(1000000);
+    generateECC(100);
     return 0;
 }	
