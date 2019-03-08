@@ -12,8 +12,7 @@ void prepareRNG(br_hmac_drbg_context * ctx) {
     fp = fopen("/dev/urandom", "r");
     fread(&data, 1, byte_count, fp);
     fclose(fp);
-    br_hmac_drbg_context ctx;
-    br_hmac_drbg_init(&ctx, &br_sha256_vtable, data, byte_count);
+    br_hmac_drbg_init(ctx, &br_sha256_vtable, data, byte_count);
 #endif
 #ifdef __WIN32
     br_hmac_drbg_init(ctx, &br_sha256_vtable, NULL, 0);
@@ -154,6 +153,6 @@ int main(int argc, char * argv[]) {
     // generateRSA(10,512);
  //   generateRSA(10,1024);
   //  generateRSA(10,2048);
-    generateECC(100);
+    generateECC(1000000);
     return 0;
 }	
