@@ -1,3 +1,0 @@
-/home/michal/PV204-Project/CMakeFiles/rebuild_cache.dir
-/home/michal/PV204-Project/CMakeFiles/PV204_Project.dir
-/home/michal/PV204-Project/CMakeFiles/edit_cache.dir

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.13)
 project(PV204_Project C)
 
 set(CMAKE_C_STANDARD 11)
@@ -317,4 +317,3 @@ add_executable(PV204_Project
         BearSSL/src/inner.h
         BearSSL/src/settings.c
         generator.c)
-
