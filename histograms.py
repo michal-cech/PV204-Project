@@ -5,7 +5,8 @@ import math
 
 def get_data_rsa(file):
     csv_reader = csv.reader(open(file), delimiter=';')
-    n = []
+    n_msb = []
+    n_lsb = []
     p_msb = []
     p_lsb = []
     q_msb = []
@@ -14,7 +15,8 @@ def get_data_rsa(file):
     d_lsb = []
     t = []
     for row in csv_reader:
-        n.append(int(row[1], 16))
+        n_msb.append(get_msb(row[1]))
+        n_lsb.append(get_lsb(row[1]))
         p_msb.append(get_msb(row[3]))
         p_lsb.append(get_lsb(row[3]))
         q_msb.append(get_msb(row[4]))
@@ -22,7 +24,9 @@ def get_data_rsa(file):
         d_msb.append(get_msb(row[5]))
         d_lsb.append(get_lsb(row[5]))
         t.append(get_time(row[6]))
-    
+
+    plot([go.Histogram(x=n_msb)], filename= file[:-4] + '_n_msb.html')
+    plot([go.Histogram(x=n_lsb)], filename= file[:-4] + '_n_lsb.html')
     plot([go.Histogram(x=p_msb)], filename= file[:-4] + '_p_msb.html')
     plot([go.Histogram(x=p_lsb)], filename= file[:-4] + '_p_lsb.html')
     plot([go.Histogram(x=q_msb)], filename= file[:-4] + '_q_msb.html')
