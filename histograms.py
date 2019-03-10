@@ -57,7 +57,7 @@ def get_data_ecc(file):
 
 def get_msb(str_number):
     num = int(str_number, 16)    
-    return int(math.log(num, 2))
+    return int(math.log(num, 2)) + 1
 
 def get_lsb(str_number):
     num = int(str_number, 16)
