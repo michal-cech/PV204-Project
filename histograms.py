@@ -25,15 +25,15 @@ def get_data_rsa(file):
         d_lsb.append(get_lsb(row[5]))
         t.append(get_time(row[6]))
 
-    plot([go.Histogram(x=n_msb)], filename= file[:-4] + '_n_msb.html')
-    plot([go.Histogram(x=n_lsb)], filename= file[:-4] + '_n_lsb.html')
-    plot([go.Histogram(x=p_msb)], filename= file[:-4] + '_p_msb.html')
-    plot([go.Histogram(x=p_lsb)], filename= file[:-4] + '_p_lsb.html')
-    plot([go.Histogram(x=q_msb)], filename= file[:-4] + '_q_msb.html')
-    plot([go.Histogram(x=q_lsb)], filename= file[:-4] + '_q_lsb.html')
-    plot([go.Histogram(x=d_msb)], filename= file[:-4] + '_d_msb.html')
-    plot([go.Histogram(x=d_lsb)], filename= file[:-4] + '_d_lsb.html')
-    plot([go.Histogram(x=t)], filename= file[:-4] + '_t.html')
+    plot([go.Histogram(x=n_msb, nbinsx = 256, autobinx = False)], filename= file[:-4] + '_n_msb.html')
+    plot([go.Histogram(x=n_lsb, nbinsx = 256, autobinx = False)], filename= file[:-4] + '_n_lsb.html')
+    plot([go.Histogram(x=p_msb, nbinsx = 256, autobinx = False)], filename= file[:-4] + '_p_msb.html')
+    plot([go.Histogram(x=p_lsb, nbinsx = 256, autobinx = False)], filename= file[:-4] + '_p_lsb.html')
+    plot([go.Histogram(x=q_msb, nbinsx = 256, autobinx = False)], filename= file[:-4] + '_q_msb.html')
+    plot([go.Histogram(x=q_lsb, nbinsx = 256, autobinx = False)], filename= file[:-4] + '_q_lsb.html')
+    plot([go.Histogram(x=d_msb, nbinsx = 256, autobinx = False)], filename= file[:-4] + '_d_msb.html')
+    plot([go.Histogram(x=d_lsb, nbinsx = 256, autobinx = False)], filename= file[:-4] + '_d_lsb.html')
+    plot([go.Histogram(x=t, autobinx = False)], filename= file[:-4] + '_t.html')
 
 def get_data_ecc(file):
     csv_reader = csv.reader(open(file), delimiter=';')
@@ -49,20 +49,19 @@ def get_data_ecc(file):
         d_lsb.append(get_lsb(row[2]))
         t.append(get_time(row[3]))
     
-    plot([go.Histogram(x=e_msb)], filename= file[:-4] + '_e_msb.html')
-    plot([go.Histogram(x=e_lsb)], filename= file[:-4] + '_e_lsb.html')
-    plot([go.Histogram(x=d_msb)], filename= file[:-4] + '_d_msb.html')
-    plot([go.Histogram(x=d_lsb)], filename= file[:-4] + '_d_lsb.html')
-    plot([go.Histogram(x=t)], filename= file[:-4] + '_t.html')
+    plot([go.Histogram(x=e_msb, nbinsx = 256, autobinx = False)], filename= file[:-4] + '_e_msb.html')
+    plot([go.Histogram(x=e_lsb, nbinsx = 256, autobinx = False)], filename= file[:-4] + '_e_lsb.html')
+    plot([go.Histogram(x=d_msb, nbinsx = 256, autobinx = False)], filename= file[:-4] + '_d_msb.html')
+    plot([go.Histogram(x=d_lsb, nbinsx = 256, autobinx = False)], filename= file[:-4] + '_d_lsb.html')
+    plot([go.Histogram(x=t, autobinx = False)], filename= file[:-4] + '_t.html')
 
 def get_msb(str_number):
-    num = int(str_number, 16)    
-    return int(math.log(num, 2)) + 1
+    str_msb = str_number[:2]
+    return int(str_msb, 16)
 
 def get_lsb(str_number):
-    num = int(str_number, 16)
-    bin_num = bin(num)[2:]
-    return bin_num[-1]
+    str_msb = str_number[-2:]
+    return int(str_msb, 16)
 
 def get_time(str_time):
     return float(str_time[:-3])
