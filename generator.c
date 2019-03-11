@@ -101,10 +101,16 @@ void generateRSA(int number, unsigned int bits) {
     fclose(file);
 }
 
-void printECCKeysToFile(br_ec_private_key *pk, br_ec_public_key * pbk, int counter,FILE * file, struct timespec t1, struct timespec t2) {
+void printECCKeysToFile(br_ec_private_key *pk, br_ec_public_key * pbk, int counter,FILE * file, struct timespec t1, struct timespec t2, size_t offset, size_t xLength) {
     fprintf(file, "%d;", counter);
     for (size_t i = 0; i < pbk->qlen; i++) {
-        fprintf(file,"%02hhX", pbk->q[i]);
+        if (i == 0) {
+            fprintf(file, "0x");
+        }
+        fprintf(file, "%02hhX", pbk->q[i]);
+        if (i + 1 == offset || i  == xLength) {
+            fprintf(file, "||");
+        }
     }
     fprintf(file, ";");
     for (size_t i = 0 ; i < pk->xlen; i ++) {
@@ -127,8 +133,8 @@ void generateECC(int number) {
     br_ec_public_key public_key;
     br_ec_impl impl = br_ec_p256_m31;
 
-    unsigned char buffer_priv[BR_EC_KBUF_PRIV_MAX_SIZE];
-    unsigned char buffer_pub[BR_EC_KBUF_PUB_MAX_SIZE];
+    unsigned char buffer_priv[BR_EC_KBUF_PRIV_MAX_SIZE] = {0};
+    unsigned char buffer_pub[BR_EC_KBUF_PUB_MAX_SIZE] = {0};
 
     FILE *file = fopen("result.csv", "w");
 
@@ -140,9 +146,11 @@ void generateECC(int number) {
     for (int i = 0; i < number; i++) {
         clock_gettime(CLOCK_MONOTONIC, &tstart);
         br_ec_keygen (&ctx.vtable, &impl, &private_key, buffer_priv, 23);
+        size_t pointX_length;
+        size_t offset = impl.xoff(23, &pointX_length);
         br_ec_compute_pub(&impl, &public_key, buffer_pub, &private_key);
         clock_gettime(CLOCK_MONOTONIC, &tend);
-        printECCKeysToFile(&private_key, &public_key, i,file, tstart, tend);
+        printECCKeysToFile(&private_key, &public_key, i,file, tstart, tend, offset, pointX_length);
     }
 
     fclose(file);
