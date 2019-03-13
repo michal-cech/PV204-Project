@@ -12,7 +12,7 @@ def get_data_rsa(file):
     occ = []
 
     for row in csv_reader:
-        temp_msb = get_msb(row[5])	
+        temp_msb = get_msb(row[5])
         temp_t = round(get_time(row[6]) // 1000000)
 
         d_msb_index = next((index for (index, d) in enumerate(temp_d_msb) if d["msb"] == temp_msb and d["t"] == temp_t), None)
@@ -29,7 +29,7 @@ def get_data_rsa(file):
 
 
     plot({"data" : [go.Heatmap(z=occ, x=d_msb, y=t)],
-	"layout" : go.Layout(autosize=True, plot_bgcolor='#ffffff', title="EC private key MSB and time generation heatmap")},
+	"layout" : go.Layout(autosize=True, plot_bgcolor='#ffffff', title= file[:-4].upper() + " private key MSB and time generation heatmap", xaxis=dict(title="Private key MSB value"), yaxis=dict(title="Keygen time(ms)"))},
 	filename= file[:-4] + '_heat_d_msb.html')
 
 def get_data_ecc(file):
@@ -41,7 +41,7 @@ def get_data_ecc(file):
 
     for row in csv_reader:
         temp_msb = get_msb(row[2])
-        temp_t = round(get_time(row[3]) / 100000)
+        temp_t = round(get_time(row[3]) // 100000)
 
         d_msb_index = next((index for (index, d) in enumerate(temp_d_msb) if d["msb"] == temp_msb and d["t"] == temp_t), None)
 
@@ -56,7 +56,9 @@ def get_data_ecc(file):
         occ.append(temp_d_msb[i]['occ'])
 
 
-    plot([go.Heatmap(z=occ, x=d_msb, y=t)], filename= file[:-4] + '_heat_d_msb.html')
+    plot({"data" : [go.Heatmap(z=occ, x=d_msb, y=t)],
+	"layout" : go.Layout(autosize=True, plot_bgcolor='#ffffff', title="EC private key MSB and time generation heatmap", xaxis=dict(title="Private key MSB value"), yaxis=dict(title="Keygen time(ms)"))},
+	filename= file[:-4] + 'ms_heat_d_msb.html')
 
 def get_msb(str_number):
     str_msb = str_number[:2]
@@ -71,6 +73,6 @@ def get_time(str_time):
 
 
 ##get_data_rsa('rsa1024.txt')
-get_data_rsa('rsa2048.txt')
-#get_data_rsa('rsa512.txt')
-##get_data_ecc('result.csv')
+##get_data_rsa('rsa2048.txt')
+##get_data_rsa('rsa512.txt')
+get_data_ecc('result.csv')
