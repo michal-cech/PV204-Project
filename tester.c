@@ -20,17 +20,12 @@ void prepareRNG(br_hmac_drbg_context * ctx) {
 #endif
 }
 
-void generateRSA(br_rsa_private_key *pk, br_rsa_public_key * pbk, unsigned int bits) {
+void generateRSA(br_rsa_private_key *pk, br_rsa_public_key * pbk, unsigned char *buffer_priv, unsigned char *buffer_pub, unsigned int bits) {
     br_hmac_drbg_context ctx;
     prepareRNG(&ctx);
 
     //start generating
     br_rsa_keygen keygen = br_rsa_keygen_get_default();
-
-
-    unsigned char buffer_priv[BR_RSA_KBUF_PRIV_SIZE(bits)];
-    unsigned char buffer_pub[BR_RSA_KBUF_PUB_SIZE(bits)];
-
 
     keygen(&ctx.vtable, pk, buffer_priv, pbk, buffer_pub, bits, 0);
 }
@@ -64,21 +59,31 @@ void generateECC(br_ec_private_key * sk, br_ec_public_key * pk, br_ec_impl * imp
 
 
 int main(int argc, char * argv[]) {
+    unsigned int bits = 2048;
+    size_t byte = 256;
+
     // RSA part /
     br_hmac_drbg_context rngCtx;
     const br_hash_class * class = &br_sha224_vtable;
     prepareRNG(&rngCtx);
 
-    unsigned char dest[265] = {0};
+    unsigned char dest[256];
+    unsigned char buffer_priv[BR_RSA_KBUF_PRIV_SIZE(bits)];
+    unsigned char buffer_pub[BR_RSA_KBUF_PUB_SIZE(bits)];
+
+    const char *encMessage =  "randommsg";
+
     br_rsa_private_key pk;
     br_rsa_public_key pbk;
-    generateRSA(&pk, &pbk, 2048);
-    char *encMessage =  "randommsg";
+
+    generateRSA(&pk, &pbk, buffer_priv, buffer_pub, bits);
     size_t lengthM = strlen(encMessage);
-        br_rsa_i31_oaep_encrypt(&rngCtx.vtable, class, NULL, 0, &pbk, dest, 265, encMessage, lengthM);
+
+    br_rsa_i31_oaep_encrypt(&rngCtx.vtable, class, NULL, 0, &pbk, dest, 265, encMessage, lengthM);
+
     size_t length = 1024;
-    if (br_rsa_i31_oaep_decrypt(class, NULL, 0, &pk, dest, &length)) {
-        printf ("Success");
+    if (br_rsa_i31_oaep_decrypt(class, NULL, 0, &pk, dest, &byte)) {
+        printf ("Success\n");
     }
 
  //   generateRSA(10,1024);
@@ -89,7 +94,7 @@ int main(int argc, char * argv[]) {
     br_ec_public_key public_key;
     br_ec_impl impl = br_ec_p256_m31;
     generateECC(&private_key, &public_key, &impl);
-    unsigned char signature[256] = {0 };
+    unsigned char signature[256] = { 0 };
 
     br_sha256_context ctx;
     br_sha256_init(&ctx);
