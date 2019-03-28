@@ -30,7 +30,7 @@ void generateRSA(br_rsa_private_key *pk, br_rsa_public_key * pbk, unsigned char 
     keygen(&ctx.vtable, pk, buffer_priv, pbk, buffer_pub, bits, 0);
 }
 
-void generateECC(br_ec_private_key * sk, br_ec_public_key * pk, br_ec_impl * impl) {
+void generateECC(br_ec_private_key * sk, void * buffer_priv, br_ec_public_key * pk, void * buffer_pub, br_ec_impl * impl) {
     br_hmac_drbg_context ctx;
     prepareRNG(&ctx);
 
@@ -40,19 +40,9 @@ void generateECC(br_ec_private_key * sk, br_ec_public_key * pk, br_ec_impl * imp
     br_ec_public_key public_key;
 */
 
-    unsigned char buffer_priv[BR_EC_KBUF_PRIV_MAX_SIZE];
-    unsigned char buffer_pub[BR_EC_KBUF_PUB_MAX_SIZE];
-
-    FILE *file = fopen("result.csv", "w");
-
-    if (!file) {
-        fprintf(stderr, "Could not open file");
-        exit(2);
-    }
     br_ec_keygen (&ctx.vtable, impl, sk, buffer_priv, 23);
     br_ec_compute_pub(impl, pk, buffer_pub, sk);
 
-    fclose(file);
 }
 
 
@@ -90,25 +80,27 @@ int main(int argc, char * argv[]) {
   //  generateRSA(10,2048);
 
   // ECC PART //
+    unsigned char buffer_priv[BR_EC_KBUF_PRIV_MAX_SIZE];
+    unsigned char buffer_pub[BR_EC_KBUF_PUB_MAX_SIZE];
     br_ec_private_key private_key;
     br_ec_public_key public_key;
     br_ec_impl impl = br_ec_p256_m31;
-    generateECC(&private_key, &public_key, &impl);
-    unsigned char signature[256] = { 0 };
+    generateECC(&private_key, buffer_priv, &public_key, buffer_pub, &impl);
+    unsigned char signature[64] = {0 };
 
     br_sha256_context ctx;
     br_sha256_init(&ctx);
-    char * message = "RANDOMDATA";
-    br_sha256_update(&ctx, &message, strlen(message));
-    unsigned char output[256] = {0};
+    char * message = "RRRRRRRRRR";
+    br_sha256_update(&ctx, message, strlen(message));
+    unsigned char output[32] = {0};
     br_sha256_out(&ctx, output);
 
-
-    br_ecdsa_i31_sign_raw(&impl, ctx.vtable, output, &private_key, signature );
-    if (br_ecdsa_i31_vrfy_raw(&impl, ctx.vtable, 32, &public_key, signature, 64)) {
+    size_t signedLength = 0;
+    if (( signedLength = br_ecdsa_i31_sign_raw(&impl, ctx.vtable, output, &private_key, signature )) != 0) {
+        printf("Signed");
+    }
+    if (br_ecdsa_i31_vrfy_raw(&impl, output, 32, &public_key, signature, signedLength)) {
         printf("Success");
-    } else {
-        printf("YOU SUCK");
     }
     return 0;
 }	
