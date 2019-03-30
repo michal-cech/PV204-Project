@@ -34,7 +34,7 @@ void eccPart(br_hmac_drbg_context * ctx) {
 int main(int argc, char * argv[]) {
     br_hmac_drbg_context ctx;
     prepareRNG(&ctx);
-//    rsaPart(&ctx);
+    rsaPart(&ctx);
     eccPart(&ctx);
 
 }	

@@ -17,14 +17,13 @@ void eccSign(br_sha512_context * ctx, br_ec_private_key * pk, br_ec_public_key *
         int index, struct timespec * tstart, struct timespec * tend) {
 
     unsigned char signature[64] = {0 };
-
+    clock_gettime(CLOCK_MONOTONIC, tstart);
     size_t signedLength = br_ecdsa_i31_sign_raw(impl, ctx->vtable, output, pk, signature );
+    clock_gettime(CLOCK_MONOTONIC, tend);
     if (!signedLength) {
         printf("ecc index %d", index);
     }
-    if (br_ecdsa_i31_vrfy_raw(impl, output, 32, pbk, signature, signedLength)) {
-        printf("Success");
-    }
+    if (br_ecdsa_i31_vrfy_raw(impl, output, 32, pbk, signature, signedLength));
 }
 
 void eccRandomMessages(br_hmac_drbg_context * ctx, size_t tries) {
@@ -38,7 +37,7 @@ void eccRandomMessages(br_hmac_drbg_context * ctx, size_t tries) {
 
     br_sha512_context ctn;
     br_sha512_init(&ctn);
-    FILE * file = fopen("ecc_random_messages", "w");
+    FILE * file = fopen("ecc_random_messages.txt", "w");
     fprintf(file, "ID;HW;TIME\n");
     for (int i = 0; i < tries; i++) {
         size_t bytes = (size_t) rand() % 190;
@@ -77,7 +76,7 @@ void eccRandomExponent(br_hmac_drbg_context * ctx, size_t tries) {
     unsigned char output[64] = {0};
     br_sha512_out(&ctn, output);
 
-    FILE * file = fopen("ecc_random_exp", "w");
+    FILE * file = fopen("ecc_random_exp.txt", "w");
     fprintf(file, "ID;HW;TIME\n");
     for (int i = 0; i < tries; i++) {
         unsigned char buffer_priv[BR_EC_KBUF_PRIV_MAX_SIZE];

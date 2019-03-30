@@ -99,7 +99,7 @@ void randomMessagesFixedExpSigRSA(br_hmac_drbg_context* ctx, size_t tries, size_
     br_sha512_context ctn;
     br_sha512_init(&ctn);
 
-    FILE *  file = fopen("rsa_random_message_sig", "w");
+    FILE *  file = fopen("rsa_random_message_sig.txt", "w");
     fprintf(file,"ID;HW;LENGTH;TIME\n");
     for (int i = 0; i < tries; i++) {
         size_t bytes = (size_t) rand() % 190;
@@ -140,7 +140,7 @@ void fixedMessageRandomExpSigRSA(br_hmac_drbg_context* ctx, size_t tries, size_t
     unsigned char hash[hashLength];
     br_sha512_out(&ctn, hash);
 
-    FILE *  file = fopen("rsa_random_exp_sig", "w");
+    FILE *  file = fopen("rsa_random_exp_sig.txt", "w");
     fprintf(file,"ID;HW;LENGTH;TIME\n");
     for (int i = 0; i < tries; i++) {
         br_rsa_private_key pk;
@@ -184,7 +184,7 @@ void randomMessagesFixedExpRSA(br_hmac_drbg_context* ctx, size_t tries, size_t b
 
     struct timespec tstart={0,0}, tend={0,0};
     // FIXED EXPONENT, RANDOM MESSAGES
-    FILE *  file = fopen("rsa_random_msg_dec", "w");
+    FILE *  file = fopen("rsa_random_msg_dec.txt", "w");
     fprintf(file,"ID;HW;LENGTH;TIME\n");
     for (int i = 0; i < tries; i++) {
         size_t bytes = (size_t) rand() % 190;
@@ -208,7 +208,7 @@ void randomMessagesFixedExpRSA(br_hmac_drbg_context* ctx, size_t tries, size_t b
 void fixedMessageRandomExpRSA(br_hmac_drbg_context* ctx, size_t tries, size_t bits) {
     struct timespec tstart={0,0}, tend={0,0};
 
-    FILE *  file = fopen("rsa_random_exp_dec", "w");
+    FILE *  file = fopen("rsa_random_exp_dec.txt", "w");
     fprintf(file,"ID;HW;TIME\n");
 
     size_t bytes = 190;

@@ -3,6 +3,7 @@
 //
 #include "BearSSL/inc/bearssl.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 void prepareRNG(br_hmac_drbg_context * ctx) {
     //prepare PRNG
@@ -13,8 +14,7 @@ void prepareRNG(br_hmac_drbg_context * ctx) {
     fp = fopen("/dev/urandom", "r");
     fread(&data, 1, byte_count, fp);
     fclose(fp);
-    br_hmac_drbg_context ctx;
-    br_hmac_drbg_init(&ctx, &br_sha256_vtable, data, byte_count);
+    br_hmac_drbg_init(ctx, &br_sha256_vtable, data, byte_count);
 #endif
 #ifdef __WIN32
     br_hmac_drbg_init(ctx, &br_sha256_vtable, NULL, 0);
