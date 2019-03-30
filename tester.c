@@ -76,16 +76,45 @@ int main(int argc, char * argv[]) {
         printf ("Success\n");
     }
 
+    // Sign - PKCS
+    const unsigned char *hash_oid = NULL;
+    size_t hash_len = 256;
+    br_rsa_private_key sk;
+    br_rsa_public_key pubk;
+    generateRSA(&sk, &pubk, buffer_priv, buffer_pub, 2048);
+    unsigned char x[64] = {0 };
+
+    br_sha256_context ctn;
+    br_sha256_init(&ctn);
+    char * msg = "RRRRRRRRRR";
+    br_sha256_update(&ctn, msg, strlen(msg));
+    unsigned char hash[32] = {0};
+    br_sha256_out(&ctn, hash);
+
+    if (br_rsa_i31_pkcs1_sign(hash_oid, hash, hash_len, &sk, x) != 0) {
+        printf("Sign PKCS Success\n");
+    } else {
+        printf("Sign PKCS Not Success\n");
+    }
+
+    unsigned char hash_out[64] = {0 };
+
+    if (br_rsa_i31_pkcs1_vrfy(x, 64, NULL, 256, &pubk, hash_out)) {
+        printf("PKCS Verification success\n");
+    } else {
+        printf("PKCS Verification not success\n");
+    }
+
  //   generateRSA(10,1024);
   //  generateRSA(10,2048);
 
   // ECC PART //
-    unsigned char buffer_priv[BR_EC_KBUF_PRIV_MAX_SIZE];
-    unsigned char buffer_pub[BR_EC_KBUF_PUB_MAX_SIZE];
+    unsigned char buffer_priv_ec[BR_EC_KBUF_PRIV_MAX_SIZE];
+    unsigned char buffer_pub_ec[BR_EC_KBUF_PUB_MAX_SIZE];
     br_ec_private_key private_key;
     br_ec_public_key public_key;
     br_ec_impl impl = br_ec_p256_m31;
-    generateECC(&private_key, buffer_priv, &public_key, buffer_pub, &impl);
+    generateECC(&private_key, buffer_priv_ec, &public_key, buffer_pub_ec, &impl);
     unsigned char signature[64] = {0 };
 
     br_sha256_context ctx;
@@ -97,10 +126,10 @@ int main(int argc, char * argv[]) {
 
     size_t signedLength = 0;
     if (( signedLength = br_ecdsa_i31_sign_raw(&impl, ctx.vtable, output, &private_key, signature )) != 0) {
-        printf("Signed");
+        printf("Signed\n");
     }
     if (br_ecdsa_i31_vrfy_raw(&impl, output, 32, &public_key, signature, signedLength)) {
-        printf("Success");
+        printf("Success\n");
     }
     return 0;
 }	
