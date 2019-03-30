@@ -47,11 +47,11 @@ void eccRandomMessages(br_hmac_drbg_context * ctx, size_t tries) {
             message[j] = (unsigned char) (rand() % 256);
         }
         br_sha512_update(&ctn, message, bytes);
-        unsigned char output[32] = {0};
+        unsigned char output[64] = {0};
         br_sha512_out(&ctn, output);
-        int hW = hammingWeight(output, 32);
+        int hW = hammingWeight(output, 64);
 
-        eccSign(&ctn, &private_key, &public_key, &impl, output, 32, i, &tstart, &tend);
+        eccSign(&ctn, &private_key, &public_key, &impl, output, 64, i, &tstart, &tend);
 
         fprintf(file, "%d;%d;",i,hW);
         fprintf(file,"%.5f ns;\n",
@@ -74,7 +74,7 @@ void eccRandomExponent(br_hmac_drbg_context * ctx, size_t tries) {
         message[j] = (unsigned char) (rand() % 256);
     }
     br_sha512_update(&ctn, message, bytes);
-    unsigned char output[32] = {0};
+    unsigned char output[64] = {0};
     br_sha512_out(&ctn, output);
 
     FILE * file = fopen("ecc_random_exp", "w");
