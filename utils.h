@@ -13,5 +13,6 @@
 
 void prepareRNG(br_hmac_drbg_context * ctx);
 int hammingWeight(unsigned char * x, size_t size);
+void hexStringToByteArray(const unsigned char * src, unsigned char* dest, size_t length);
 
 #endif //PV204_PROJECT_UTILS_H

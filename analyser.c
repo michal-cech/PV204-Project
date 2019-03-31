@@ -22,8 +22,9 @@ void rsaEncryptionPart(br_hmac_drbg_context* ctx) {
 }
 
 void rsaPart(br_hmac_drbg_context* ctx) {
-    rsaEncryptionPart(ctx);
-    rsaSignedPart(ctx);
+//    rsaEncryptionPart(ctx);
+//    rsaSignedPart(ctx);
+    highHammingWeightRSA(ctx);
 }
 
 void eccPart(br_hmac_drbg_context * ctx) {
@@ -35,6 +36,6 @@ int main(int argc, char * argv[]) {
     br_hmac_drbg_context ctx;
     prepareRNG(&ctx);
     rsaPart(&ctx);
-    eccPart(&ctx);
+//    eccPart(&ctx);
 
 }	

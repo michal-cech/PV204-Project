@@ -33,3 +33,14 @@ int hammingWeight(unsigned char * x, size_t size) {
     }
     return count;
 }
+
+void hexStringToByteArray(const unsigned char * src, unsigned char* dest, size_t length) {
+    for(int count = 0; count < length; count++) {
+        sscanf(src, "%2hhx", &dest[count]);
+        src += 2 * sizeof(unsigned char);
+    }
+    printf ("{");
+    for(int count = 0; count < length; count++)
+        printf("%u, ", dest[count]);
+    printf("}");
+}
