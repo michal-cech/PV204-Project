@@ -30,7 +30,10 @@ void fixedMessageRandomExpRSA(br_hmac_drbg_context* ctx, size_t tries, size_t bi
 void randomMessagesFixedExpRSA(br_hmac_drbg_context* ctx, size_t tries, size_t bits);
 void fixedMessageRandomExpSigRSA(br_hmac_drbg_context* ctx, size_t tries, size_t bits);
 void randomMessagesFixedExpSigRSA(br_hmac_drbg_context* ctx, size_t tries, size_t bits);
-void highHammingWeightRSA(br_hmac_drbg_context* ctx, size_t tries);
+void highHammingWeightRSADec(br_hmac_drbg_context* ctx, size_t tries);
+void highHammingWeightRSASign(br_hmac_drbg_context* ctx, size_t tries);
+void lowHammingWeightRSADec(br_hmac_drbg_context* ctx, size_t tries);
+void lowHammingWeightRSASign(br_hmac_drbg_context* ctx, size_t tries);
 
 
 
