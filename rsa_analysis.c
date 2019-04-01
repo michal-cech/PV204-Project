@@ -279,7 +279,7 @@ void highHammingWeightRSADec(br_hmac_drbg_context* ctx, size_t tries) {
     size_t bytes = 190;
     unsigned char encMessage[] = "Testovaci zprava";
 
-    FILE *  file = fopen("rsa_high_hw.txt", "w");
+    FILE *  file = fopen("rsa_high_hw_dec.txt", "w");
     fprintf(file,"ID;TIME\n");
     for (int i = 0; i < tries; i++) {
         encryptDecrypt(ctx, &pk, &pbk,encMessage, bytes, i, &tstart, &tend );
@@ -333,7 +333,7 @@ void lowHammingWeightRSADec(br_hmac_drbg_context* ctx, size_t tries) {
     size_t bytes = 190;
     unsigned char encMessage[] = "Testovaci zprava";
 
-    FILE *  file = fopen("rsa_high_hw.txt", "w");
+    FILE *  file = fopen("rsa_low_hw_dec.txt", "w");
     fprintf(file,"ID;TIME\n");
     for (int i = 0; i < tries; i++) {
         encryptDecrypt(ctx, &pk, &pbk,encMessage, bytes, i, &tstart, &tend );
@@ -363,7 +363,7 @@ void lowHammingWeightRSASign(br_hmac_drbg_context* ctx, size_t tries) {
     unsigned char hash[hashLength];
     br_sha512_out(&ctn, hash);
 
-    FILE *  file = fopen("rsa_high_hw_sign.txt", "w");
+    FILE *  file = fopen("rsa_low_hw_sign.txt", "w");
     fprintf(file,"ID;TIME\n");
 
     for (int i = 0; i < tries; i++) {
