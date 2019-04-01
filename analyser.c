@@ -14,15 +14,15 @@
 void rsaSignedPart(br_hmac_drbg_context* ctx) {
 //    fixedMessageRandomExpSigRSA(ctx, TRIES, BITS);
 //    randomMessagesFixedExpSigRSA(ctx,TRIES, BITS);
-    highHammingWeightRSASign(ctx, TRIES);
-//    lowHammingWeightRSASign(ctx, TRIES);
+//    highHammingWeightRSASign(ctx, TRIES);
+    lowHammingWeightRSASign(ctx, TRIES);
 }
 
 void rsaEncryptionPart(br_hmac_drbg_context* ctx) {
 //    randomMessagesFixedExpRSA(ctx, TRIES, BITS);
 //    fixedMessageRandomExpRSA(ctx, TRIES, BITS);
 //    highHammingWeightRSADec(ctx, TRIES);
-//    lowHammingWeightRSADec(ctx, TRIES);
+    lowHammingWeightRSADec(ctx, TRIES);
 }
 
 void rsaPart(br_hmac_drbg_context* ctx) {
@@ -39,6 +39,6 @@ int main(int argc, char * argv[]) {
     br_hmac_drbg_context ctx;
     prepareRNG(&ctx);
     rsaPart(&ctx);
-    eccPart(&ctx);
+//    eccPart(&ctx);
 
 }	
