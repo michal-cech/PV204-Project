@@ -60,7 +60,7 @@ void eccRandomMessages(br_hmac_drbg_context * ctx, size_t tries) {
     br_sha512_context ctn;
     br_sha512_init(&ctn);
     FILE * file = fopen("ecc_random_messages.txt", "w");
-    fprintf(file, "ID;HW;TIME\n");
+    fprintf(file, "ID;HW;TIME;\n");
     for (int i = 0; i < tries; i++) {
         size_t bytes = (size_t) rand() % 190;
         unsigned char message[bytes];
@@ -75,7 +75,7 @@ void eccRandomMessages(br_hmac_drbg_context * ctx, size_t tries) {
         eccSign(&ctn, &private_key, &public_key, &impl, output, 64, i, &tstart, &tend);
 
         fprintf(file, "%d;%d;",i,hW);
-        fprintf(file,"%.5f ns;\n",
+        fprintf(file,"%.5f;\n",
                 (((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) -
                  ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec))*1.0e9);
     }
@@ -99,7 +99,7 @@ void eccRandomExponent(br_hmac_drbg_context * ctx, size_t tries) {
     br_sha512_out(&ctn, output);
 
     FILE * file = fopen("ecc_random_exp.txt", "w");
-    fprintf(file, "ID;HW;TIME\n");
+    fprintf(file, "ID;HW;TIME;\n");
     for (int i = 0; i < tries; i++) {
         unsigned char buffer_priv[BR_EC_KBUF_PRIV_MAX_SIZE];
         unsigned char buffer_pub[BR_EC_KBUF_PUB_MAX_SIZE];
@@ -111,7 +111,7 @@ void eccRandomExponent(br_hmac_drbg_context * ctx, size_t tries) {
 
         eccSign(&ctn, &private_key, &public_key, &impl, output, 32, i, &tstart, &tend);
         fprintf(file, "%d;%d;",i,hW);
-        fprintf(file,"%.5f ns;\n",
+        fprintf(file,"%.5f;\n",
                 (((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) -
                  ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec))*1.0e9);
     }

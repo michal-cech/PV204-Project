@@ -120,7 +120,7 @@ void randomMessagesFixedExpSigRSA(br_hmac_drbg_context* ctx, size_t tries, size_
     br_sha512_init(&ctn);
 
     FILE *  file = fopen("rsa_random_message_sig.txt", "w");
-    fprintf(file,"ID;HW;LENGTH;TIME\n");
+    fprintf(file,"ID;HW;LENGTH;TIME;\n");
     for (int i = 0; i < tries; i++) {
         size_t bytes = (size_t) rand() % 190;
         unsigned char message[bytes];
@@ -134,7 +134,7 @@ void randomMessagesFixedExpSigRSA(br_hmac_drbg_context* ctx, size_t tries, size_
         int hW = hammingWeight(hash, bytes);
         signRSA(ctx, &pk, &pbk, hash, bytes, i, &tstart, &tend );
         fprintf(file, "%d;%d;%u;",i,hW,bytes);
-        fprintf(file,"%.5f ns;\n",
+        fprintf(file,"%.5f;\n",
                 (((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) -
                  ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec))*1.0e9);
 
@@ -161,7 +161,7 @@ void fixedMessageRandomExpSigRSA(br_hmac_drbg_context* ctx, size_t tries, size_t
     br_sha512_out(&ctn, hash);
 
     FILE *  file = fopen("rsa_random_exp_sig.txt", "w");
-    fprintf(file,"ID;HW;LENGTH;TIME\n");
+    fprintf(file,"ID;HW;LENGTH;TIME;\n");
     for (int i = 0; i < tries; i++) {
         br_rsa_private_key pk;
         br_rsa_public_key pbk;
@@ -182,7 +182,7 @@ void fixedMessageRandomExpSigRSA(br_hmac_drbg_context* ctx, size_t tries, size_t
 
         signRSA(ctx, &pk, &pbk, hash, hashLength, i, &tstart, &tend);
         fprintf(file, "%d;%d;", i, hW);
-        fprintf(file, "%.5f ns;\n",
+        fprintf(file, "%.5f;\n",
                 (((double) tend.tv_sec + 1.0e-9 * tend.tv_nsec) -
                  ((double) tstart.tv_sec + 1.0e-9 * tstart.tv_nsec)) * 1.0e9);
     }
@@ -205,7 +205,7 @@ void randomMessagesFixedExpRSA(br_hmac_drbg_context* ctx, size_t tries, size_t b
     struct timespec tstart={0,0}, tend={0,0};
     // FIXED EXPONENT, RANDOM MESSAGES
     FILE *  file = fopen("rsa_random_msg_dec.txt", "w");
-    fprintf(file,"ID;HW;LENGTH;TIME\n");
+    fprintf(file,"ID;HW;LENGTH;TIME;\n");
     for (int i = 0; i < tries; i++) {
         size_t bytes = (size_t) rand() % 190;
         unsigned char encMessage[bytes];
@@ -215,7 +215,7 @@ void randomMessagesFixedExpRSA(br_hmac_drbg_context* ctx, size_t tries, size_t b
         int hW = hammingWeight(encMessage, bytes);
         encryptDecrypt(ctx, &pk, &pbk,encMessage, bytes, i, &tstart, &tend );
         fprintf(file, "%d;%d;%u;",i,hW,bytes);
-        fprintf(file,"%.5f ns;\n",
+        fprintf(file,"%.5f;\n",
                 (((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) -
                  ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec))*1.0e9);
 
@@ -229,7 +229,7 @@ void fixedMessageRandomExpRSA(br_hmac_drbg_context* ctx, size_t tries, size_t bi
     struct timespec tstart={0,0}, tend={0,0};
 
     FILE *  file = fopen("rsa_random_exp_dec.txt", "w");
-    fprintf(file,"ID;HW;TIME\n");
+    fprintf(file,"ID;HW;TIME;\n");
 
     size_t bytes = 190;
     unsigned char encMessage[bytes];
@@ -257,7 +257,7 @@ void fixedMessageRandomExpRSA(br_hmac_drbg_context* ctx, size_t tries, size_t bi
         encryptDecrypt(ctx, &pk, &pbk,encMessage, bytes, i, &tstart, &tend );
 
         fprintf(file, "%d;%d;",i,hW);
-        fprintf(file,"%.5f ns;\n",
+        fprintf(file,"%.5f;\n",
                 (((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) -
                  ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec))*1.0e9);
     }
@@ -280,11 +280,11 @@ void highHammingWeightRSADec(br_hmac_drbg_context* ctx, size_t tries) {
     unsigned char encMessage[] = "Testovaci zprava";
 
     FILE *  file = fopen("rsa_high_hw_dec.txt", "w");
-    fprintf(file,"ID;TIME\n");
+    fprintf(file,"ID;TIME;\n");
     for (int i = 0; i < tries; i++) {
         encryptDecrypt(ctx, &pk, &pbk,encMessage, bytes, i, &tstart, &tend );
         fprintf(file, "%d;",i);
-        fprintf(file,"%.5f ns;\n",
+        fprintf(file,"%.5f;\n",
                 (((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) -
                  ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec))*1.0e9);
 
@@ -311,12 +311,12 @@ void highHammingWeightRSASign(br_hmac_drbg_context* ctx, size_t tries) {
     br_sha512_out(&ctn, hash);
 
     FILE *  file = fopen("rsa_high_hw_sign.txt", "w");
-    fprintf(file,"ID;TIME\n");
+    fprintf(file,"ID;TIME;\n");
 
     for (int i = 0; i < tries; i++) {
         signRSA(ctx, &pk, &pbk, hash, hashLength, i, &tstart, &tend);
         fprintf(file, "%d;",i);
-        fprintf(file,"%.5f ns;\n",
+        fprintf(file,"%.5f;\n",
                 (((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) -
                  ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec))*1.0e9);
     }
@@ -334,11 +334,11 @@ void lowHammingWeightRSADec(br_hmac_drbg_context* ctx, size_t tries) {
     unsigned char encMessage[] = "Testovaci zprava";
 
     FILE *  file = fopen("rsa_low_hw_dec.txt", "w");
-    fprintf(file,"ID;TIME\n");
+    fprintf(file,"ID;TIME;\n");
     for (int i = 0; i < tries; i++) {
         encryptDecrypt(ctx, &pk, &pbk,encMessage, bytes, i, &tstart, &tend );
         fprintf(file, "%d;",i);
-        fprintf(file,"%.5f ns;\n",
+        fprintf(file,"%.5f;\n",
                 (((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) -
                  ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec))*1.0e9);
 
@@ -364,12 +364,12 @@ void lowHammingWeightRSASign(br_hmac_drbg_context* ctx, size_t tries) {
     br_sha512_out(&ctn, hash);
 
     FILE *  file = fopen("rsa_low_hw_sign.txt", "w");
-    fprintf(file,"ID;TIME\n");
+    fprintf(file,"ID;TIME;\n");
 
     for (int i = 0; i < tries; i++) {
         signRSA(ctx, &pk, &pbk, hash, hashLength, i, &tstart, &tend);
         fprintf(file, "%d;",i);
-        fprintf(file,"%.5f ns;\n",
+        fprintf(file,"%.5f;\n",
                 (((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) -
                  ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec))*1.0e9);
     }
