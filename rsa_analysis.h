@@ -20,17 +20,18 @@ void signRSA(br_hmac_drbg_context* ctx, br_rsa_private_key *pk, br_rsa_public_ke
 void generateRSA(br_hmac_drbg_context * ctx,br_rsa_private_key *pk, br_rsa_public_key * pbk,
         unsigned char *buffer_priv, unsigned char *buffer_pub, unsigned int bits);
 
-void generateLowRSA(br_hmac_drbg_context* ctx, br_rsa_private_key *pk, br_rsa_public_key * pbk,
-        unsigned char *buffer_priv, unsigned char *buffer_pub, unsigned int bits);
+void generateLowRSA(br_rsa_private_key *pk, br_rsa_public_key * pbk);
 
-void generateHighRSA(br_hmac_drbg_context* ctx, br_rsa_private_key *pk, br_rsa_public_key * pbk,
-                    unsigned char *buffer_priv, unsigned char *buffer_pub, unsigned int bits);
+void generateHighRSA(br_rsa_private_key *pk, br_rsa_public_key * pbk);
 
 void fixedMessageRandomExpRSA(br_hmac_drbg_context* ctx, size_t tries, size_t bits);
 void randomMessagesFixedExpRSA(br_hmac_drbg_context* ctx, size_t tries, size_t bits);
 void fixedMessageRandomExpSigRSA(br_hmac_drbg_context* ctx, size_t tries, size_t bits);
 void randomMessagesFixedExpSigRSA(br_hmac_drbg_context* ctx, size_t tries, size_t bits);
-void highHammingWeightRSA(br_hmac_drbg_context* ctx, size_t tries);
+void highHammingWeightRSADec(br_hmac_drbg_context* ctx, size_t tries);
+void highHammingWeightRSASign(br_hmac_drbg_context* ctx, size_t tries);
+void lowHammingWeightRSADec(br_hmac_drbg_context* ctx, size_t tries);
+void lowHammingWeightRSASign(br_hmac_drbg_context* ctx, size_t tries);
 
 
 
