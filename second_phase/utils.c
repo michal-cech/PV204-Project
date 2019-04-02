@@ -1,7 +1,7 @@
 //
 // Created by MrMCech on 30.03.2019.
 //
-#include "BearSSL/inc/bearssl.h"
+#include "../BearSSL/inc/bearssl.h"
 #include <stdlib.h>
 #include <stdio.h>
 

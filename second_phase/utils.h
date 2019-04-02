@@ -6,7 +6,7 @@
 #ifndef PV204_PROJECT_UTILS_H
 #define PV204_PROJECT_UTILS_H
 
-#include "BearSSL/inc/bearssl.h"
+#include "../BearSSL/inc/bearssl.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>

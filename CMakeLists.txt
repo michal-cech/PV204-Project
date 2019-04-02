@@ -317,5 +317,10 @@ add_executable(PV204_Project
         BearSSL/src/inner.h
         BearSSL/src/settings.c
 #        generator.c
-        analyser.c
-        rsa_analysis.c utils.h ecc_analysis.h ecc_analysis.c utils.c)
+        second_phase/analyser.c
+        second_phase/rsa_analysis.c
+        second_phase/rsa_analysis.h
+        second_phase/utils.h
+        second_phase/ecc_analysis.h
+        second_phase/ecc_analysis.c
+        second_phase/utils.c)
