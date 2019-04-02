@@ -16,14 +16,14 @@ def get_graphs_time(file):
         if row[0] == "ID":
             continue
         id.append(row[0])
-        t.append(get_time(row[1]) / 1000000)
+        t.append(row[1] / 1000000)
 
     plot({'data': [go.Histogram(x=t)],
-         'layout': go.Layout(autosize=True, plot_bgcolor='#ffffff', title=file[0:3].upper() + ' histogram - ' + file[4:-4].replace("_", " ").capitalize() + ' (time)', xaxis=dict(title='Value of time(ms)'), yaxis=dict(title='Number of occurrences'))},
+         'layout': go.Layout(autosize=True, plot_bgcolor='#ffffff', title=file[0:3].upper() + ' histogram - ' + file[4:-4].replace("_", " ").capitalize() + ' (time / occurrences)', xaxis=dict(title='Value of time(ms)'), yaxis=dict(title='Number of occurrences'))},
          filename= 'graphs/' + file[0:3] + '/' + file[:-4] + '_time.html')
 
     plot({'data': [go.Bar(x=id, y=t)],
-         'layout': go.Layout(autosize=True, plot_bgcolor='#ffffff', title=file[0:3].upper() + ' bar - ' + file[4:-4].replace("_", " ").capitalize() + ' (hw / time)', xaxis=dict(title='Index'), yaxis=dict(title='Value of time(ms)'))},
+         'layout': go.Layout(autosize=True, plot_bgcolor='#ffffff', title=file[0:3].upper() + ' bar - ' + file[4:-4].replace("_", " ").capitalize() + ' (id / time)', xaxis=dict(title='Index'), yaxis=dict(title='Value of time(ms)'))},
          filename= 'graphs/' + file[0:3] + '/' + file[:-4] + '_bar.html')
 
 def get_graphs_hw_time(file):
@@ -39,14 +39,14 @@ def get_graphs_hw_time(file):
             continue
         id.append(row[0])
         hw.append(row[1])
-        t.append(get_time(row[2]) / 1000000)
+        t.append(row[2] / 1000000)
 
     plot({'data': [go.Histogram(x=hw)],
-         'layout': go.Layout(autosize=True, plot_bgcolor='#ffffff', title=file[0:3].upper() + ' histogram - ' + file[4:-4].replace("_", " ").capitalize() + ' (hamming weight)', xaxis=dict(title='Value of hamming weight'), yaxis=dict(title='Number of occurrences'))},
+         'layout': go.Layout(autosize=True, plot_bgcolor='#ffffff', title=file[0:3].upper() + ' histogram - ' + file[4:-4].replace("_", " ").capitalize() + ' (hamming weight / occurrences)', xaxis=dict(title='Value of hamming weight'), yaxis=dict(title='Number of occurrences'))},
          filename= 'graphs/' + file[0:3] + '/' + file[:-4] + '_hw.html')
 
     plot({'data': [go.Histogram(x=t)],
-         'layout': go.Layout(autosize=True, plot_bgcolor='#ffffff', title=file[0:3].upper() + ' histogram - ' + file[4:-4].replace("_", " ").capitalize() + ' (time)', xaxis=dict(title='Value of time(ms)'), yaxis=dict(title='Number of occurrences'))},
+         'layout': go.Layout(autosize=True, plot_bgcolor='#ffffff', title=file[0:3].upper() + ' histogram - ' + file[4:-4].replace("_", " ").capitalize() + ' (time / occurrences)', xaxis=dict(title='Value of time(ms)'), yaxis=dict(title='Number of occurrences'))},
          filename= 'graphs/' + file[0:3] + '/' + file[:-4] + '_time.html')
 
     plot({'data': [go.Histogram2d(x=hw, y=t)],
@@ -54,7 +54,7 @@ def get_graphs_hw_time(file):
         filename= 'graphs/' + file[0:3] + '/' + file[:-4] + '_hist2d.html')
 
     plot({'data': [go.Bar(x=id, y=t)],
-         'layout': go.Layout(autosize=True, plot_bgcolor='#ffffff', title=file[0:3].upper() + ' bar - ' + file[4:-4].replace("_", " ").capitalize() + ' (hw / time)', xaxis=dict(title='Index'), yaxis=dict(title='Value of time(ms)'))},
+         'layout': go.Layout(autosize=True, plot_bgcolor='#ffffff', title=file[0:3].upper() + ' bar - ' + file[4:-4].replace("_", " ").capitalize() + ' (id / time)', xaxis=dict(title='Index'), yaxis=dict(title='Value of time(ms)'))},
          filename= 'graphs/' + file[0:3] + '/' + file[:-4] + '_bar.html')
 
 def get_graphs_hw_length_time(file):
@@ -72,7 +72,7 @@ def get_graphs_hw_length_time(file):
         id.append(row[0])
         hw.append(row[1])
         length.append(row[2])
-        t.append(get_time(row[3]) / 1000000)
+        t.append(row[3] / 1000000)
 
     plot({'data': [go.Histogram(x=hw)],
         'layout': go.Layout(autosize=True, plot_bgcolor='#ffffff', title=file[0:3].upper() + ' histogram - ' + file[4:-4].replace("_", " ").capitalize() + ' (hamming weight)', xaxis=dict(title='Value of hamming weight'), yaxis=dict(title='Number of occurrences'))},
@@ -86,24 +86,14 @@ def get_graphs_hw_length_time(file):
         'layout': go.Layout(autosize=True, plot_bgcolor='#ffffff', title=file[0:3].upper() + ' histogram2d - ' + file[4:-4].replace("_", " ").capitalize() + ' (hw / time / occurences)', xaxis=dict(title='Value of hamming weight'), yaxis=dict(title='Value of time(ms)'))},
         filename= 'graphs/' + file[0:3] + '/' + file[:-4] + '_hist2d.html')
 
-    plot({'data': [go.Heatmap(x=hw, y=t, z=length)],
-        'layout': go.Layout(autosize=True, plot_bgcolor='#ffffff', title=file[0:3].upper() + ' heatmap - ' + file[4:-4].replace("_", " ").capitalize() + ' (hw / time / length)', xaxis=dict(title='Value of hamming weight'), yaxis=dict(title='Value of time(ms)'))},
-        filename= 'graphs/' + file[0:3] + '/' + file[:-4] + '_heat.html')
-
     plot({'data': [go.Bar(x=id, y=t)],
-        'layout': go.Layout(autosize=True, plot_bgcolor='#ffffff', title=file[0:3].upper() + ' bar - ' + file[4:-4].replace("_", " ").capitalize() + ' (hw / time)', xaxis=dict(title='Index'), yaxis=dict(title='Value of time(ms)'))},
+        'layout': go.Layout(autosize=True, plot_bgcolor='#ffffff', title=file[0:3].upper() + ' bar - ' + file[4:-4].replace("_", " ").capitalize() + ' (id / time)', xaxis=dict(title='Index'), yaxis=dict(title='Value of time(ms)'))},
         filename= 'graphs/' + file[0:3] + '/' + file[:-4] + '_bar.html')
 
-def get_time(str_time):
-    return float(str_time[:-3])
-
-def sort_time(val):
-    return val[1]
-
-get_graphs_hw_length_time('rsa_random_message_sign.txt')
-get_graphs_hw_time('rsa_random_exponent_sign.txt')
-get_graphs_time('rsa_high_hamming_weight.txt')
+get_graphs_time('rsa_high_hamming_weight_message_decrypt.txt')
 get_graphs_hw_length_time('rsa_random_message_decrypt.txt')
+get_graphs_hw_length_time('rsa_random_message_sign.txt')
 get_graphs_hw_time('rsa_random_exponent_decrypt.txt')
+get_graphs_hw_time('rsa_random_exponent_sign.txt')
 get_graphs_hw_time('ecc_random_message.txt')
 get_graphs_hw_time('ecc_random_exponent.txt')
