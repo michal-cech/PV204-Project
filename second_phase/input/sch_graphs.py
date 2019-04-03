@@ -12,7 +12,7 @@ def get_graphs_time(file):
 
     sorted_reader = sorted(csv_reader, key=operator.itemgetter(1))
 
-    for row in sorted_reader[:-1000]:
+    for row in sorted_reader:
         if row[0] == "ID":
             continue
         id.append(row[0])
@@ -65,7 +65,7 @@ def get_graphs_hw_length_time(file):
 
     sorted_reader = sorted(csv_reader, key=operator.itemgetter(2))
 
-    for row in sorted_reader[:-1000]:
+    for row in sorted_reader:
         if row[0] == "ID":
              continue
         id.append(row[0])
@@ -94,10 +94,10 @@ def get_time(str_time):
 
     return float(str_time)/1000000
 
-get_graphs_time('ecc_large_exponent.txt')
-get_graphs_hw_time('ecc_random_exponent.txt')
-get_graphs_hw_time('ecc_random_messages.txt')
-get_graphs_time('ecc_short_exponent.txt')
+#get_graphs_time('ecc_large_exponent.txt')
+#get_graphs_hw_time('ecc_random_exponent.txt')
+#get_graphs_hw_time('ecc_random_messages.txt')
+#get_graphs_time('ecc_short_exponent.txt')
 
 #get_graphs_time('rsa_high_hamming_weight_decrypt.txt')
 #get_graphs_time('rsa_high_hamming_weight_signature.txt')
@@ -107,4 +107,4 @@ get_graphs_time('ecc_short_exponent.txt')
 #get_graphs_hw_time('rsa_random_exponent_decrypt.txt')
 #get_graphs_hw_time('rsa_random_exponent_signature.txt')
 #get_graphs_hw_length_time('rsa_random_message_decrypt.txt')
-#get_graphs_hw_length_time('rsa_random_message_signature.txt')
+get_graphs_hw_length_time('rsa_random_message_signature.txt')
