@@ -110,25 +110,27 @@ void generateRSA(br_hmac_drbg_context * ctx,br_rsa_private_key *pk, br_rsa_publi
 
 void randomMessagesFixedExpSigRSA(br_hmac_drbg_context* ctx, size_t tries, size_t bits) {
     struct timespec tstart={0,0}, tend={0,0};
-    unsigned char *buffer_priv = calloc(BR_RSA_KBUF_PRIV_SIZE(bits), sizeof(unsigned char));
-    unsigned char * buffer_pub = calloc(BR_RSA_KBUF_PUB_SIZE(bits), sizeof(unsigned char));
+//    unsigned char *buffer_priv = calloc(BR_RSA_KBUF_PRIV_SIZE(bits), sizeof(unsigned char));
+//    unsigned char * buffer_pub = calloc(BR_RSA_KBUF_PUB_SIZE(bits), sizeof(unsigned char));
+    unsigned char buffer_priv[BR_RSA_KBUF_PRIV_SIZE(bits)];
+    unsigned char buffer_pub[BR_RSA_KBUF_PUB_SIZE(bits)];
     br_rsa_private_key pk;
     br_rsa_public_key pbk;
     generateRSA(ctx,&pk, &pbk, buffer_priv, buffer_pub, bits);
-
+    generateLowRSA(&pk, &pbk);
     br_sha512_context ctn;
     br_sha512_init(&ctn);
 
     FILE *  file = fopen("rsa_random_message_sig.txt", "w");
+    unsigned char message[200];
+    unsigned char hash[200];
     fprintf(file,"ID;HW;LENGTH;TIME;\n");
     for (int i = 0; i < tries; i++) {
         size_t bytes = (size_t) rand() % 190;
-        unsigned char message[bytes];
         for (int j = 0; j < bytes; j++) {
             message[j] = (unsigned char) (rand() % 256);
         }
         br_sha512_update(&ctn, message, bytes);
-        unsigned char hash[bytes];
         br_sha512_out(&ctn, hash);
 
         int hW = hammingWeight(hash, bytes);
@@ -139,8 +141,8 @@ void randomMessagesFixedExpSigRSA(br_hmac_drbg_context* ctx, size_t tries, size_
                  ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec))*1.0e9);
 
     }
-    free(buffer_priv);
-    free(buffer_pub);
+//    free(buffer_priv);
+//    free(buffer_pub);
     fclose(file);
 
 }
@@ -193,15 +195,16 @@ void fixedMessageRandomExpSigRSA(br_hmac_drbg_context* ctx, size_t tries, size_t
 
 void randomMessagesFixedExpRSA(br_hmac_drbg_context* ctx, size_t tries, size_t bits) {
     // RSA part /
-    unsigned char *buffer_priv = calloc(BR_RSA_KBUF_PRIV_SIZE(bits), sizeof(unsigned char));
+//    unsigned char *buffer_priv = calloc(BR_RSA_KBUF_PRIV_SIZE(bits), sizeof(unsigned char));
 
-    unsigned char * buffer_pub = calloc(BR_RSA_KBUF_PUB_SIZE(bits), sizeof(unsigned char));
-
+//    unsigned char * buffer_pub = calloc(BR_RSA_KBUF_PUB_SIZE(bits), sizeof(unsigned char));
+    unsigned char buffer_priv[BR_RSA_KBUF_PRIV_SIZE(bits)];
+    unsigned char buffer_pub[BR_RSA_KBUF_PUB_SIZE(bits)];
     br_rsa_private_key pk;
     br_rsa_public_key pbk;
 
     generateRSA(ctx,&pk, &pbk, buffer_priv, buffer_pub, bits);
-
+   // generateLoRSA(&pk, &pbk);
     struct timespec tstart={0,0}, tend={0,0};
     // FIXED EXPONENT, RANDOM MESSAGES
     FILE *  file = fopen("rsa_random_msg_dec.txt", "w");
@@ -220,8 +223,8 @@ void randomMessagesFixedExpRSA(br_hmac_drbg_context* ctx, size_t tries, size_t b
                  ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec))*1.0e9);
 
     }
-    free(buffer_priv);
-    free(buffer_pub);
+//    free(buffer_priv);
+//    free(buffer_pub);
     fclose(file);
 }
 
@@ -277,7 +280,7 @@ void highHammingWeightRSADec(br_hmac_drbg_context* ctx, size_t tries) {
     br_rsa_public_key pbk;
     generateHighRSA(&pk, &pbk);
     size_t bytes = 190;
-    unsigned char encMessage[] = "Testovaci zprava";
+    unsigned char encMessage[] = "";
 
     FILE *  file = fopen("rsa_high_hw_dec.txt", "w");
     fprintf(file,"ID;TIME;\n");
