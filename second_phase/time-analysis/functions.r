@@ -27,6 +27,10 @@ rsa_graphs <- function(file1, file2, file3, titleString, output) {
 }
 
 ecc_graphs <- function(file1, file2, file3, titleString, output) {
+  file1 <- "ecc_random_exp.txt"
+  file2 <- "ecc_large_exponent.txt"
+  file3 <- "ecc_short_exponent.txt"
+  
   data1 <- read.csv2(file1, header=T)
   data2 <- read.csv2(file2, header=T)
   data3 <- read.csv2(file3, header=T)
@@ -43,12 +47,12 @@ ecc_graphs <- function(file1, file2, file3, titleString, output) {
   timeSorted2 <- head(sort(times2), length(times2)*0.99)
   timeSorted3 <- head(sort(times3), length(times3)*0.99)
   
-  p1 <- hist(timeSorted1, breaks=288)
-  p2 <- hist(timeSorted2, breaks=288)
-  p3 <- hist(timeSorted3, breaks=288)
+  p1 <- hist(timeSorted1, breaks="fd")
+  p2 <- hist(timeSorted2, breaks="fd")
+  p3 <- hist(timeSorted3, breaks="fd")
   
   
-  plot(p1, col=rgb(0,0,1,1/4), main = titleString, xlab="time in ms", ylim=c(0, 8000), xlim = c(1.47,1.5))
+  plot(p1, col=rgb(0,0,1,1/4), main = "titleString", xlab="time in ms", ylim=c(0, 8000), xlim = c(1.47,1.5))
   plot(p2, col=rgb(0,1,0,1/4), add=T)
   plot(p3, col=rgb(1,0,0,1/4), add=T)
   legend("topright",c("random","high HW", "low HW"), fill=c(rgb(0,0,1,1/4), rgb(0,1,0,1/4), rgb(1,0,0,1/4)))

@@ -317,10 +317,18 @@ add_executable(PV204_Project
         BearSSL/src/inner.h
         BearSSL/src/settings.c
 #        generator.c
-        second_phase/analyser.c
-        second_phase/rsa_analysis.c
-        second_phase/rsa_analysis.h
-        second_phase/utils.h
-        second_phase/ecc_analysis.h
-        second_phase/ecc_analysis.c
-        second_phase/utils.c)
+#        second_phase/analyser.c
+#        second_phase/rsa_analysis.c
+ #       second_phase/rsa_analysis.h
+#        second_phase/utils.h
+#        second_phase/ecc_analysis.h
+#        second_phase/ecc_analysis.c
+#        second_phase/utils.c
+		third_phase/pkcs11.h
+        third_phase/pkcs11_ft.h
+        third_phase/pkcs11f.h
+        third_phase/Pkcs11Stub.cpp
+        third_phase/Pkcs11Stub.h
+        third_phase/pkcs11t.h
+        third_phase/tester.c
+		)

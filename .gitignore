@@ -4,7 +4,6 @@ rsa1024.txt
 rsa2048.txt
 rsa512.txt
 .idea/.name
-/BearSSL
 /cmake-build-debug
 /results
 /vystupy
