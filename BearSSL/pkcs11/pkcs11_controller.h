@@ -120,11 +120,16 @@ int generateRSAKeyPair(HMODULE dll_handle, CK_SESSION_HANDLE session,
         CK_OBJECT_HANDLE* pubKey, CK_OBJECT_HANDLE* privKey,
         unsigned char * id, size_t idSize,
         unsigned char* subject, size_t subSize) {
+    CK_BYTE publicExponent;
+    if (pubexp == 0) {
+        publicExponent = 3;
+    } else {
+        publicExponent = (unsigned char) pubexp;
+    }
     FARPROC generate = GetProcAddress(dll_handle, "C_GenerateKeyPair");
     CK_MECHANISM mechanism = {CKM_RSA_PKCS_KEY_PAIR_GEN, NULL, 0};
     CK_BBOOL true = 1;
     CK_ULONG modulusBits = size;
-    CK_BYTE publicExponent = pubexp;
 
     CK_ATTRIBUTE publicKeyTemplate[] = {
             {CKA_ENCRYPT, &true, sizeof(true)},
@@ -138,19 +143,56 @@ int generateRSAKeyPair(HMODULE dll_handle, CK_SESSION_HANDLE session,
             {CKA_TOKEN, &true, sizeof(true)},
             {CKA_PRIVATE, &true, sizeof(true)},
             {CKA_SENSITIVE, &true, sizeof(true)},
-            {CKA_SUBJECT, subject, subSize},
-            {CKA_ID, id, idSize},
+            {CKA_ID, id, (CK_ULONG)idSize},
             {CKA_DECRYPT, &true, sizeof(true)},
             {CKA_SIGN, &true, sizeof(true)},
             {CKA_UNWRAP, &true, sizeof(true)}
     };
     unsigned long resultValue;
-    if ((resultValue = generate(session, &mechanism, publicKeyTemplate, 5, privateKeyTemplate, 8, pubKey, privKey)) != CKR_OK) {
+    if ((resultValue = generate(session, &mechanism, publicKeyTemplate, 5, privateKeyTemplate, 7, pubKey, privKey)) != CKR_OK) {
         return 0;
     }
     return 1;
+}
 
+int generateECCKeyPair(HMODULE dll_handle, CK_SESSION_HANDLE session,
+                       unsigned size, uint32_t pubexp,
+                       CK_OBJECT_HANDLE* pubKey, CK_OBJECT_HANDLE* privKey,
+                       unsigned char * id, size_t idSize,
+                       unsigned char* subject, size_t subSize) {
+    FARPROC generate = GetProcAddress(dll_handle, "C_GenerateKeyPair");
+    CK_BYTE publicExponent;
+    if (pubexp == 0) {
+        publicExponent = 3;
+    } else {
+        publicExponent = (unsigned char) pubexp;
+    }
+    CK_MECHANISM mechanism = {CKM_RSA_PKCS_KEY_PAIR_GEN, NULL, 0};
+    CK_BBOOL true = 1;
+    CK_ULONG modulusBits = size;
 
+    CK_ATTRIBUTE publicKeyTemplate[] = {
+            {CKA_ENCRYPT, &true, sizeof(true)},
+            {CKA_VERIFY, &true, sizeof(true)},
+            {CKA_WRAP, &true, sizeof(true)},
+            {CKA_MODULUS_BITS, &modulusBits, sizeof(modulusBits)},
+            {CKA_PUBLIC_EXPONENT, &publicExponent, sizeof (publicExponent)}
+    };
+
+    CK_ATTRIBUTE privateKeyTemplate[] = {
+            {CKA_TOKEN, &true, sizeof(true)},
+            {CKA_PRIVATE, &true, sizeof(true)},
+            {CKA_SENSITIVE, &true, sizeof(true)},
+            {CKA_ID, id, (CK_ULONG)idSize},
+            {CKA_DECRYPT, &true, sizeof(true)},
+            {CKA_SIGN, &true, sizeof(true)},
+            {CKA_UNWRAP, &true, sizeof(true)}
+    };
+    unsigned long resultValue;
+    if ((resultValue = generate(session, &mechanism, publicKeyTemplate, 5, privateKeyTemplate, 7, pubKey, privKey)) != CKR_OK) {
+        return 0;
+    }
+    return 1;
 }
 
 

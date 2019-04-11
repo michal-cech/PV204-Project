@@ -960,6 +960,10 @@ size_t br_ec_keygen(const br_prng_class **rng_ctx,
 size_t br_ec_compute_pub(const br_ec_impl *impl, br_ec_public_key *pk,
 	void *kbuf, const br_ec_private_key *sk);
 
+size_t
+br_ec_token_keygen(const br_prng_class **rng_ctx,
+				   const br_ec_impl *impl, br_ec_private_key *sk,
+				   void *kbuf, int curve);
 #ifdef __cplusplus
 }
 #endif

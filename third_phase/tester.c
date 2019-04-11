@@ -16,7 +16,13 @@
 
 
 int main(int argc, char * argv[]) {
-    size_t labelSize = 6;
-    unsigned char label[] = "labell";
-    br_rsa_token_keygen(NULL,NULL,&labelSize,NULL,label,0, 0);
+    unsigned char label[] = "test_token";
+    size_t labelSize = sizeof(label);
+    unsigned char pin[] = "123456";
+    size_t pinSize = sizeof(pin);
+    unsigned char params[labelSize + pinSize];
+    memcpy(params, label, labelSize);
+    memcpy(params+labelSize, pin, pinSize);
+    size_t paramSizes[2] = {labelSize, pinSize};
+    br_rsa_token_keygen(NULL,NULL,paramSizes,NULL,params,2048, 0);
 }	
