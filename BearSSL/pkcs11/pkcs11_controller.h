@@ -115,6 +115,19 @@ int closeSession(HMODULE dll_handle, CK_SESSION_HANDLE session) {
     close(session);
 }
 
+int findKeyById(HMODULE dll_handle, CK_SESSION_HANDLE session, void * id, size_t idSize, CK_OBJECT_HANDLE * key) {
+    FARPROC findInit = GetProcAddress(dll_handle, "C_FindObjectsInit");
+    FARPROC find = GetProcAddress(dll_handle, "C_FindObjects");
+    FARPROC findFinish = GetProcAddress(dll_handle, "C_FindObjectsFinal");
+    CK_ATTRIBUTE template[] = {
+            {CKA_ID, id, idSize}
+    };
+    findInit(session, template ,0);
+    CK_ULONG realCount = 0;
+    find(session, key, 1, &realCount);
+    findFinish(session);
+}
+
 int generateRSAKeyPair(HMODULE dll_handle, CK_SESSION_HANDLE session,
         unsigned size, uint32_t pubexp,
         CK_OBJECT_HANDLE* pubKey, CK_OBJECT_HANDLE* privKey,
@@ -134,7 +147,6 @@ int generateRSAKeyPair(HMODULE dll_handle, CK_SESSION_HANDLE session,
     CK_ATTRIBUTE publicKeyTemplate[] = {
             {CKA_ENCRYPT, &true, sizeof(true)},
             {CKA_VERIFY, &true, sizeof(true)},
-            {CKA_WRAP, &true, sizeof(true)},
             {CKA_MODULUS_BITS, &modulusBits, sizeof(modulusBits)},
             {CKA_PUBLIC_EXPONENT, &publicExponent, sizeof (publicExponent)}
     };
@@ -145,14 +157,39 @@ int generateRSAKeyPair(HMODULE dll_handle, CK_SESSION_HANDLE session,
             {CKA_SENSITIVE, &true, sizeof(true)},
             {CKA_ID, id, (CK_ULONG)idSize},
             {CKA_DECRYPT, &true, sizeof(true)},
-            {CKA_SIGN, &true, sizeof(true)},
-            {CKA_UNWRAP, &true, sizeof(true)}
+            {CKA_SIGN, &true, sizeof(true)}
     };
     unsigned long resultValue;
-    if ((resultValue = generate(session, &mechanism, publicKeyTemplate, 5, privateKeyTemplate, 7, pubKey, privKey)) != CKR_OK) {
+    if ((resultValue = generate(session, &mechanism, publicKeyTemplate, 4, privateKeyTemplate, 6, pubKey, privKey)) != CKR_OK) {
         return 0;
     }
     return 1;
+}
+
+
+int getPublicKey(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJECT_HANDLE publicKey,
+        br_rsa_public_key * pk, CK_BYTE * kbuf_pub) {
+    FARPROC getAttribute = GetProcAddress(dll_handle, "C_GetAttributeValue");
+    unsigned char pModulus[256];
+    unsigned char pExponent[256];
+    CK_ATTRIBUTE template[] = {
+            {CKA_PUBLIC_EXPONENT, pExponent, 2048},
+            {CKA_MODULUS, pModulus, 2048}
+    };
+    int rv = getAttribute(session, publicKey, template, 2);
+    if (rv == CKR_OK) {
+
+        pk->nlen = template[1].ulValueLen;
+        pk->elen = template[0].ulValueLen;
+        memcpy(kbuf_pub, pModulus, pk->nlen);
+        memcpy(kbuf_pub+pk->nlen, pExponent,pk->elen);
+        pk->n = kbuf_pub;
+        pk->e = kbuf_pub + pk->nlen;
+        return 1;
+    } else {
+        return 0;
+    }
+
 }
 
 int generateECCKeyPair(HMODULE dll_handle, CK_SESSION_HANDLE session,

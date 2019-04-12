@@ -17,13 +17,16 @@ br_rsa_token_keygen(const br_prng_class **rng,
                     br_rsa_public_key *pk, void *kbuf_pub,
                     unsigned size, uint32_t pubexp)
 {
-    size_t labelSize = ((size_t*)kbuf_priv)[0];
-    size_t pinSize = ((size_t*)kbuf_priv)[1];
+    unsigned char labelSize = sk->dplen;
     unsigned char label[labelSize];
+    unsigned char pinSize = sk->dqlen;
     unsigned char pin[pinSize];
+    unsigned char idSize = sk->iqlen;
+    unsigned char id[idSize];
 
-    memcpy(label, kbuf_pub,labelSize);
-    memcpy(pin, kbuf_pub + labelSize*sizeof(unsigned char), pinSize);
+    memcpy(label, sk->dp,labelSize);
+    memcpy(pin, sk->dq, pinSize);
+    memcpy(id, sk->iq, idSize);
 
 #ifdef linux
     int dll_handle = dlopen(PKCS11_DLL)
@@ -45,10 +48,10 @@ br_rsa_token_keygen(const br_prng_class **rng,
     CK_OBJECT_HANDLE pubKey;
     CK_OBJECT_HANDLE privKey;
 
-    unsigned char id[] = {1};
     unsigned char subject[] = "subject";
 
     generateRSAKeyPair(dll_handle, session, size, pubexp, &pubKey, &privKey, id, sizeof(id), subject, sizeof(subject));
+    getPublicKey(dll_handle, session, pubKey, pk, kbuf_pub);
     logoutFromSession(dll_handle, session);
     closeSession(dll_handle, session);
 
