@@ -28,14 +28,18 @@ void prepareRNG(br_hmac_drbg_context * ctx) {
 #endif
 }
 
-int encryptDemo(br_rsa_public_key * pk) {
+int encryptDemo(br_rsa_public_key * pk, br_rsa_private_key * sk) {
     br_hmac_drbg_context ctx;
     prepareRNG(&ctx);
     unsigned char encMessage[] ="Demo";
     size_t messageLength = sizeof(encMessage);
     unsigned char dest[256];
     size_t encrypted;
-    if ((encrypted = br_rsa_i31_oaep_encrypt(&(ctx.vtable),ctx.digest_class, NULL, 0, pk, dest, 256, encMessage, messageLength)) != 0) {
+    if ((encrypted = br_rsa_i31_oaep_encrypt(&(ctx.vtable),ctx.digest_class, NULL, 0, pk, dest, 256, encMessage, messageLength)) == 0) {
+        return 0;
+    }
+
+    if (br_rsa_token_oaep_decrypt(ctx.digest_class,NULL,0,sk,dest,&encrypted)) {
         return 1;
     } else {
         return 0;
@@ -74,9 +78,9 @@ int main(int argc, char * argv[]) {
     sk.iq = privateBuffer + tokenSize + labelSize + pinSize;
 
     unsigned char publicBuffer[BR_RSA_KBUF_PUB_SIZE(2048)];
-    br_rsa_token_keygen(NULL,&sk,privateBuffer,&pk,publicBuffer,2048, 0);
+    br_rsa_token_keygen(NULL,&sk,privateBuffer,&pk,publicBuffer,2048, 3);
     //ENCRYPT DEMO
-    encryptDemo(&pk);
+    encryptDemo(&pk, &sk);
 
     //SIGN
 //    br_rsa_token_pkcs1_sign();

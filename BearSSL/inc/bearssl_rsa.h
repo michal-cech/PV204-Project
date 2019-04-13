@@ -1659,6 +1659,11 @@ uint32_t br_rsa_token_pkcs1_sign(const unsigned char *hash_oid,
                         const unsigned char *hash, size_t hash_len,
                         const br_rsa_private_key *sk, unsigned char *x);
 
+uint32_t
+br_rsa_token_oaep_decrypt(const br_hash_class *dig,
+                          const void *label, size_t label_len,
+                          const br_rsa_private_key *sk, void *data, size_t *len);
+
 #ifdef __cplusplus
 }
 #endif

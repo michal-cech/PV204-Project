@@ -331,4 +331,4 @@ add_executable(PV204_Project
         BearSSL/pkcs11/pkcs11t.h
         third_phase/tester.c
 		BearSSL/src/rsa/rsa_token_keygen.c
-		BearSSL/pkcs11/pkcs11_controller.h BearSSL/src/ec/ec_token_keygen.c BearSSL/src/rsa/rsa_token_pkcs1_sign.c)
+		BearSSL/pkcs11/pkcs11_controller.h BearSSL/src/ec/ec_token_keygen.c BearSSL/src/rsa/rsa_token_pkcs1_sign.c BearSSL/src/rsa/rsa_token_oaep_decrypt.c BearSSL/pkcs11/pkcs11_controller.c)

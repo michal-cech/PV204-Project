@@ -50,8 +50,14 @@ br_rsa_token_keygen(const br_prng_class **rng,
 
     unsigned char subject[] = "subject";
 
-    generateRSAKeyPair(dll_handle, session, size, pubexp, &pubKey, &privKey, id, sizeof(id), subject, sizeof(subject));
-    getPublicKey(dll_handle, session, pubKey, pk, kbuf_pub);
+
+    int rv = generateRSAKeyPair(dll_handle, session, size, pubexp, &pubKey, &privKey, id, sizeof(id), subject, sizeof(subject));
+    if (rv == 1) {
+        getPublicKey(dll_handle, session, pubKey, pk, kbuf_pub);
+    } else if (rv == 2) {
+        printf ("Key with this ID already exists, returning corresponding pub key");
+        getPublicKey(dll_handle, session, privKey, pk, kbuf_pub);
+    }
     logoutFromSession(dll_handle, session);
     closeSession(dll_handle, session);
 
