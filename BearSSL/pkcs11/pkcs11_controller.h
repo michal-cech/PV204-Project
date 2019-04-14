@@ -80,7 +80,10 @@ int generateECCKeyPair(HMODULE dll_handle, CK_SESSION_HANDLE session,
                        unsigned char * id, size_t idSize,
                        unsigned char* subject, size_t subSize);
 
-
+int generateRSASignature(HMODULE dll_handle, CK_SESSION_HANDLE hSession,
+                         CK_BYTE_PTR pData, CK_ULONG ulDataLen,
+                         CK_BYTE_PTR pSignature, CK_ULONG_PTR pulSignatureLen,
+                         CK_OBJECT_HANDLE privateKey);
 
 
 

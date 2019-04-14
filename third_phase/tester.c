@@ -83,5 +83,5 @@ int main(int argc, char * argv[]) {
     encryptDemo(&pk, &sk);
 
     //SIGN
-//    br_rsa_token_pkcs1_sign();
+    br_rsa_token_pkcs1_sign(&sk);
 }	

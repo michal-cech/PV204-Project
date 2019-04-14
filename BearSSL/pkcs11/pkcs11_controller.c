@@ -5,6 +5,7 @@
 #include <dlfcn.h>
 #endif
 #ifdef __WIN32
+#include <stdio.h>
 #include <windows.h>
 #include <tchar.h>
 #include <stdint.h>
@@ -133,7 +134,7 @@ int generateRSAKeyPair(HMODULE dll_handle, CK_SESSION_HANDLE session,
                        unsigned char * id, size_t idSize,
                        unsigned char* subject, size_t subSize) {
     if (findKeyById(dll_handle, session, id, idSize, privKey)) {
-        return 2;
+         return 2;
     }
 
     CK_BYTE publicExponent;
@@ -231,6 +232,31 @@ int decryptWithKeyOnToken(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJE
 
     rv = decryptInit(session, &mechanism, privateKey);
     rv = decrypt(session, input, inputSize, input, outputSize);
+    return 1;
+}
+
+int generateRSASignature(HMODULE dll_handle, CK_SESSION_HANDLE hSession,
+                         CK_BYTE_PTR pData, CK_ULONG ulDataLen,
+                         CK_BYTE_PTR pSignature, CK_ULONG_PTR pulSignatureLen,
+                         CK_OBJECT_HANDLE privateKey) {
+
+    FARPROC init = GetProcAddress(dll_handle, "C_SignInit");
+    FARPROC generate = GetProcAddress(dll_handle, "C_Sign");
+
+    CK_MECHANISM mechanism = {CKM_RSA_PKCS, NULL, 0};
+
+    unsigned long resultValue;
+    if ((resultValue = init(hSession, &mechanism, privateKey)) != CKR_OK) {
+        printf("\nC_Sign: rv = 0x%.8X\n", resultValue);
+
+        return 0;
+    }
+    if ((resultValue = generate(hSession, pData, ulDataLen, pSignature, &pulSignatureLen)) != CKR_OK) {
+        printf("\nC_Sign: rv = 0x%.8X\n", resultValue);
+
+        return 0;
+    }
+
     return 1;
 }
 
