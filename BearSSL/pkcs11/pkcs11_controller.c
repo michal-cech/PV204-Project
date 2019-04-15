@@ -235,7 +235,7 @@ int decryptWithKeyOnToken(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJE
     return 1;
 }
 
-int generateRSASignature(HMODULE dll_handle, CK_SESSION_HANDLE hSession,
+uint32_t generateRSASignature(HMODULE dll_handle, CK_SESSION_HANDLE hSession,
                          CK_BYTE_PTR pData, CK_ULONG ulDataLen,
                          CK_BYTE_PTR pSignature, CK_ULONG_PTR pulSignatureLen,
                          CK_OBJECT_HANDLE privateKey) {
@@ -247,7 +247,7 @@ int generateRSASignature(HMODULE dll_handle, CK_SESSION_HANDLE hSession,
 
     unsigned long resultValue;
     if ((resultValue = init(hSession, &mechanism, privateKey)) != CKR_OK) {
-        printf("\nC_Sign: rv = 0x%.8X\n", resultValue);
+        printf("\nC_SignInit: rv = 0x%.8X\n", resultValue);
 
         return 0;
     }
