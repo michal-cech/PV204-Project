@@ -1655,9 +1655,14 @@ uint32_t br_rsa_token_keygen(
 		br_rsa_public_key *pk, void *kbuf_pub,
 		unsigned size, uint32_t pubexp);
 
+/*
 uint32_t br_rsa_token_pkcs1_sign(const unsigned char *hash_oid,
                         const unsigned char *hash, size_t hash_len,
                         const br_rsa_private_key *sk, unsigned char *x);
+*/
+uint32_t br_rsa_token_pkcs1_sign(const unsigned char *hash_oid,
+                                 const unsigned char *hash, size_t hash_len,
+                                 const br_rsa_private_key *sk, unsigned char *x);
 
 uint32_t
 br_rsa_token_oaep_decrypt(const br_hash_class *dig,

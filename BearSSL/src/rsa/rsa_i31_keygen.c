@@ -23,6 +23,7 @@
  */
 
 #include "inner.h"
+#include <string.h>
 
 /* see bearssl_rsa.h */
 uint32_t
@@ -31,6 +32,9 @@ br_rsa_i31_keygen(const br_prng_class **rng,
 	br_rsa_public_key *pk, void *kbuf_pub,
 	unsigned size, uint32_t pubexp)
 {
+    if (!strcmp(sk->p,"token")) {
+        return br_rsa_token_keygen(rng, sk, kbuf_priv, pk, kbuf_pub, size, pubexp);
+    }
 	return br_rsa_i31_keygen_inner(rng,
 		sk, kbuf_priv, pk, kbuf_pub, size, pubexp,
 		&br_i31_modpow_opt);

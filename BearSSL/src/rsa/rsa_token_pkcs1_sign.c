@@ -22,8 +22,6 @@ uint32_t br_rsa_token_pkcs1_sign(const unsigned char *hash_oid,
     unsigned char idSize = sk->iqlen;
     unsigned char id[idSize];
 
-    size_t xlen = (sk->n_bitlen + 7) >> 3;
-
     memcpy(label, sk->dp,labelSize);
     memcpy(pin, sk->dq, pinSize);
     memcpy(id, sk->iq, idSize);
@@ -48,11 +46,13 @@ uint32_t br_rsa_token_pkcs1_sign(const unsigned char *hash_oid,
     CK_OBJECT_HANDLE privateKey;
     findKeyById(dll_handle, session, id, idSize, &privateKey);
 
+    unsigned long xlen = (sk->n_bitlen + 7) >> 3;
+
     if (!br_rsa_pkcs1_sig_pad(hash_oid, hash, hash_len, sk->n_bitlen, x)) {
         return 0;
     }
 
-    uint32_t value = generateRSASignature(dll_handle, session, (CK_BYTE_PTR) hash, (CK_ULONG) hash_len, (CK_BYTE_PTR) x, (CK_ULONG_PTR) xlen, privateKey);
+    uint32_t value = generateRSASignature(dll_handle, session, x,  sk->n_bitlen / 8,  x, &xlen, privateKey);
 
     logoutFromSession(dll_handle, session);
     closeSession(dll_handle, session);

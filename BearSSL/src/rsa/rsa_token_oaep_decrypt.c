@@ -45,12 +45,9 @@ br_rsa_token_oaep_decrypt(const br_hash_class *dig,
 
     CK_OBJECT_HANDLE private_key;
     findKeyById(dll_handle, session, id, idSize, &private_key);
-    br_rsa_public_key pk;
-    unsigned char kbuf[BR_RSA_KBUF_PRIV_SIZE(2048)];
     size_t outputSize = 256;
     uint32_t r = 0;
-//    decryptWithKeyOnToken(dll_handle, session, private_key, data, *len, NULL, &outputSize);
-    unsigned char output[outputSize];
+
     r = decryptWithKeyOnToken(dll_handle, session, private_key, data, *len, data, &outputSize);
 
     r &= br_rsa_oaep_unpad(dig, label, label_len, data, len);

@@ -47,10 +47,38 @@ int encryptDemo(br_rsa_public_key * pk, br_rsa_private_key * sk) {
 
 }
 
+int signDemo(br_rsa_public_key * pk, br_rsa_private_key * sk) {
+    br_sha512_context ctn;
+    br_sha512_init(&ctn);
+
+    unsigned char message[] = "Message for signing!";
+
+    size_t message_len = sizeof(message);
+    size_t hash_len = 64;
+
+    unsigned char hash[64] = {0};
+    unsigned char sign[256] = {0};
+
+    const unsigned char *hash_oid = BR_HASH_OID_SHA512;
+
+    br_sha512_update(&ctn, message, message_len);
+    br_sha512_out(&ctn, hash);
+
+    //SIGN
+    br_rsa_token_pkcs1_sign(hash_oid, hash, hash_len, sk, sign);
+    unsigned char hash_out[hash_len];
+    if (!br_rsa_i31_pkcs1_vrfy(sign, 256, hash_oid, hash_len, pk, hash_out)) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
 
 int main(int argc, char * argv[]) {
     br_rsa_private_key sk;
     br_rsa_public_key pk;
+    int bitSize = 2048;
 
     unsigned char token[] = "token";
     unsigned char label[] = "test_token";
@@ -78,29 +106,13 @@ int main(int argc, char * argv[]) {
     sk.iqlen = idSize;
     sk.iq = privateBuffer + tokenSize + labelSize + pinSize;
 
-    sk.n_bitlen = 2048;
+    sk.n_bitlen = bitSize;
 
-    unsigned char publicBuffer[BR_RSA_KBUF_PUB_SIZE(2048)];
-    br_rsa_token_keygen(NULL,&sk,privateBuffer,&pk,publicBuffer,2048, 3);
+    unsigned char publicBuffer[BR_RSA_KBUF_PUB_SIZE(bitSize)];
+    br_rsa_token_keygen(NULL,&sk,privateBuffer,&pk,publicBuffer,bitSize, 3);
     //ENCRYPT DEMO
-    encryptDemo(&pk, &sk);
+//    encryptDemo(&pk, &sk);
+    //SIGN RSA DEMO
+    signDemo(&pk, &sk);
 
-    br_sha512_context ctn;
-    br_sha512_init(&ctn);
-
-    unsigned char message[] = "Message for signing!";
-
-    size_t message_len = sizeof(message);
-    size_t hash_len = 64;
-
-    unsigned char hash[64] = {0};
-    unsigned char sign[256] = {0};
-
-    const unsigned char *hash_oid = BR_HASH_OID_SHA512;
-
-    br_sha512_update(&ctn, message, message_len);
-    br_sha512_out(&ctn, hash);
-
-    //SIGN
-    br_rsa_token_pkcs1_sign(hash_oid, hash, hash_len, &sk, sign);
 }

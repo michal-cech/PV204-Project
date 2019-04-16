@@ -38,7 +38,6 @@ returnType (* name)
 #pragma pack(push, cryptoki, 1)
 
 #include "pkcs11_ft.h"
-#define PKCS11_LIB "C:\\SoftHSM2\\lib\\softhsm2-x64.dll"
 
 int loadLibrary(HMODULE* dll_handle);
 

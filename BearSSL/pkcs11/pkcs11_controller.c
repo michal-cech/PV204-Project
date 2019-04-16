@@ -37,7 +37,7 @@ returnType (* name)
 #pragma pack(push, cryptoki, 1)
 
 #include "pkcs11_ft.h"
-#define PKCS11_LIB "C:\\SoftHSM2\\lib\\softhsm2-x64.dll"
+#define PKCS11_LIB "\\SoftHSM2\\lib\\softhsm2-x64.dll"
 
 int loadLibrary(HMODULE* dll_handle) {
     *dll_handle = LoadLibrary(PKCS11_LIB);
@@ -196,30 +196,6 @@ int getPublicKey(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJECT_HANDLE
     }
 
 }
-int getPrivateKey(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJECT_HANDLE privateKey,
-                  br_rsa_public_key * pk, CK_BYTE * kbuf_pub) {
-    FARPROC getAttribute = GetProcAddress(dll_handle, "C_GetAttributeValue");
-    unsigned char pModulus[256];
-    unsigned char pExponent[256];
-    CK_ATTRIBUTE template[] = {
-            {CKA_PRIVATE_EXPONENT, pExponent, 2048},
-            {CKA_MODULUS, pModulus, 2048}
-    };
-    int rv = getAttribute(session, privateKey, template, 2);
-    if (rv == CKR_OK) {
-
-        pk->nlen = template[1].ulValueLen;
-        pk->elen = template[0].ulValueLen;
-        memcpy(kbuf_pub, pModulus, pk->nlen);
-        memcpy(kbuf_pub+pk->nlen, pExponent,pk->elen);
-        pk->n = kbuf_pub;
-        pk->e = kbuf_pub + pk->nlen;
-        return 1;
-    } else {
-        return 0;
-    }
-
-}
 
 int decryptWithKeyOnToken(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJECT_HANDLE privateKey,
                           unsigned char * input, size_t inputSize,
@@ -228,6 +204,13 @@ int decryptWithKeyOnToken(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJE
     FARPROC decrypt = GetProcAddress(dll_handle,"C_Decrypt");
 
     CK_MECHANISM mechanism = {CKM_RSA_X_509, NULL, 0 };
+
+/*    CK_RSA_PKCS_OAEP_PARAMS params = {
+            CKM_SHA256, CKG_MGF1_SHA256,CKZ_DATA_SPECIFIED, NULL_PTR,0
+    };
+*/
+//    CK_MECHANISM mechanism = {CKM_RSA_PKCS_OAEP, NULL, 0 };
+
     CK_RV rv = CKR_OK;
 
     rv = decryptInit(session, &mechanism, privateKey);
@@ -236,14 +219,14 @@ int decryptWithKeyOnToken(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJE
 }
 
 uint32_t generateRSASignature(HMODULE dll_handle, CK_SESSION_HANDLE hSession,
-                         CK_BYTE_PTR pData, CK_ULONG ulDataLen,
-                         CK_BYTE_PTR pSignature, CK_ULONG_PTR pulSignatureLen,
-                         CK_OBJECT_HANDLE privateKey) {
+                              CK_BYTE_PTR pData, CK_ULONG ulDataLen,
+                              CK_BYTE_PTR pSignature, CK_ULONG_PTR pulSignatureLen,
+                              CK_OBJECT_HANDLE privateKey) {
 
     FARPROC init = GetProcAddress(dll_handle, "C_SignInit");
     FARPROC generate = GetProcAddress(dll_handle, "C_Sign");
 
-    CK_MECHANISM mechanism = {CKM_RSA_PKCS, NULL, 0};
+    CK_MECHANISM mechanism = {CKM_RSA_X_509, NULL, 0};
 
     unsigned long resultValue;
     if ((resultValue = init(hSession, &mechanism, privateKey)) != CKR_OK) {
@@ -251,7 +234,7 @@ uint32_t generateRSASignature(HMODULE dll_handle, CK_SESSION_HANDLE hSession,
 
         return 0;
     }
-    if ((resultValue = generate(hSession, pData, ulDataLen, pSignature, &pulSignatureLen)) != CKR_OK) {
+    if ((resultValue = generate(hSession, pData, ulDataLen, pSignature, pulSignatureLen)) != CKR_OK) {
         printf("\nC_Sign: rv = 0x%.8X\n", resultValue);
 
         return 0;
