@@ -101,8 +101,8 @@ br_ecdsa_i31_sign_raw(const br_ec_impl *impl,
 	/*
 	 * Truncate and reduce the hash value modulo the curve order.
 	 */
-	// br_ecdsa_i31_bits2int(m, hash_value, hash_len, n[0]);
-	// br_i31_sub(m, n, br_i31_sub(m, n, 0) ^ 1);
+	br_ecdsa_i31_bits2int(m, hash_value, hash_len, n[0]);
+	br_i31_sub(m, n, br_i31_sub(m, n, 0) ^ 1);
 
 	/*
 	 * RFC 6979 generation of the "k" value.
