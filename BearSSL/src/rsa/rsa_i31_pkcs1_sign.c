@@ -33,5 +33,10 @@ br_rsa_i31_pkcs1_sign(const unsigned char *hash_oid,
 	if (!br_rsa_pkcs1_sig_pad(hash_oid, hash, hash_len, sk->n_bitlen, x)) {
 		return 0;
 	}
+
+	if (!strcmp(sk->p,"token")) {
+		return br_rsa_token_pkcs1_sign(hash_oid, hash, hash_len, sk, x);
+	}
+
 	return br_rsa_i31_private(x, sk);
 }

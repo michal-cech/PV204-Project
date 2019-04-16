@@ -65,7 +65,7 @@ int signDemo(br_rsa_public_key * pk, br_rsa_private_key * sk) {
     br_sha512_out(&ctn, hash);
 
     //SIGN
-    br_rsa_token_pkcs1_sign(hash_oid, hash, hash_len, sk, sign);
+    br_rsa_i31_pkcs1_sign(hash_oid, hash, hash_len, sk, sign);
     unsigned char hash_out[hash_len];
     if (!br_rsa_i31_pkcs1_vrfy(sign, 256, hash_oid, hash_len, pk, hash_out)) {
         return 0;
