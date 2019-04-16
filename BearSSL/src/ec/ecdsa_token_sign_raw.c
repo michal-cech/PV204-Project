@@ -56,7 +56,7 @@ br_ecdsa_token_sign_raw(const br_ec_impl *impl,
 
     CK_OBJECT_HANDLE privateKey;
     findExistingKey(dll_handle, session, keyLabel, keyLabelSize, &privateKey, CKO_PRIVATE_KEY, CKK_EC);
-    generateECCSignature(dll_handle, session, hash_value, 64, sig, &xlen, privateKey);
+    generateECCSignature(dll_handle, session, (CK_BYTE_PTR) hash_value, 64, sig, &xlen, privateKey);
 
     logoutFromSession(dll_handle, session);
     closeSession(dll_handle, session);

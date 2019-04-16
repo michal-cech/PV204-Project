@@ -84,13 +84,12 @@ int signECCDemo(br_ec_public_key * pk, br_ec_private_key * sk, br_ec_impl* impl)
     size_t hash_len = 64;
 
     unsigned char hash[64] = {0};
-    unsigned char sign[256] = {0};
-
-    const unsigned char *hash_oid = BR_HASH_OID_SHA512;
+    unsigned char sign[64] = {0};
 
     br_sha512_update(&ctn, message, message_len);
     br_sha512_out(&ctn, hash);
-    int signedLength = br_ecdsa_token_sign_raw(impl, NULL, hash, sk, sign);
+
+    size_t signedLength = br_ecdsa_i31_sign_raw(impl, ctn.vtable, hash, sk, sign);
 
     if (!br_ecdsa_i31_vrfy_raw(impl, hash, 64, pk, sign, signedLength)) {
         return 0;

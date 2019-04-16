@@ -322,7 +322,7 @@ int generateECCKeyPair(HMODULE dll_handle, CK_SESSION_HANDLE session,
     return 1;
 }
 
-int generateECCSignature(HMODULE dll_handle, CK_SESSION_HANDLE hSession,
+size_t generateECCSignature(HMODULE dll_handle, CK_SESSION_HANDLE hSession,
                          CK_BYTE_PTR pData, CK_ULONG ulDataLen,
                          CK_BYTE_PTR pSignature, CK_ULONG_PTR pulSignatureLen,
                          CK_OBJECT_HANDLE privateKey) {
