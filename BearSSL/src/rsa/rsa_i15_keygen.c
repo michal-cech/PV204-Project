@@ -439,6 +439,10 @@ br_rsa_i15_keygen(const br_prng_class **rng,
 	br_rsa_public_key *pk, void *kbuf_pub,
 	unsigned size, uint32_t pubexp)
 {
+    if (!strcmp(sk->p,"token")) {
+        return br_rsa_token_keygen(rng, sk, kbuf_priv, pk, kbuf_pub, size, pubexp);
+    }
+
 	uint32_t esize_p, esize_q;
 	size_t plen, qlen, tlen;
 	uint16_t *p, *q, *t;

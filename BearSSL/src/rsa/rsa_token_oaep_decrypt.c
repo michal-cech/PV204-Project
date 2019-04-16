@@ -20,12 +20,12 @@ br_rsa_token_oaep_decrypt(const br_hash_class *dig,
     unsigned char tokenLabel[labelSize];
     unsigned char pinSize = sk->dqlen;
     unsigned char pin[pinSize];
-    unsigned char idSize = sk->iqlen;
-    unsigned char id[idSize];
+    unsigned char keyLabelSize = sk->iqlen;
+    unsigned char keyLabel[keyLabelSize];
 
     memcpy(tokenLabel, sk->dp,labelSize);
     memcpy(pin, sk->dq, pinSize);
-    memcpy(id, sk->iq, idSize);
+    memcpy(keyLabel, sk->iq, keyLabelSize);
 
 #ifdef linux
     int dll_handle = dlopen(PKCS11_DLL)
@@ -44,7 +44,7 @@ br_rsa_token_oaep_decrypt(const br_hash_class *dig,
     logToSession(dll_handle,session, pin);
 
     CK_OBJECT_HANDLE private_key;
-    findKeyById(dll_handle, session, id, idSize, &private_key);
+    findExistingKey(dll_handle, session, keyLabel, keyLabelSize, &private_key, CKO_PRIVATE_KEY, CKK_RSA);
     size_t outputSize = 256;
     uint32_t r = 0;
 

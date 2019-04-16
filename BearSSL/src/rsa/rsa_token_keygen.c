@@ -21,12 +21,12 @@ br_rsa_token_keygen(const br_prng_class **rng,
     unsigned char label[labelSize];
     unsigned char pinSize = sk->dqlen;
     unsigned char pin[pinSize];
-    unsigned char idSize = sk->iqlen;
-    unsigned char id[idSize];
+    unsigned char keyLabelSize = sk->iqlen;
+    unsigned char keyLabel[keyLabelSize];
 
     memcpy(label, sk->dp,labelSize);
     memcpy(pin, sk->dq, pinSize);
-    memcpy(id, sk->iq, idSize);
+    memcpy(keyLabel, sk->iq, keyLabelSize);
 
 #ifdef linux
     int dll_handle = dlopen(PKCS11_DLL)
@@ -48,15 +48,12 @@ br_rsa_token_keygen(const br_prng_class **rng,
     CK_OBJECT_HANDLE pubKey;
     CK_OBJECT_HANDLE privKey;
 
-    unsigned char subject[] = "subject";
-
-
-    int rv = generateRSAKeyPair(dll_handle, session, size, pubexp, &pubKey, &privKey, id, sizeof(id), subject, sizeof(subject));
+    int rv = generateRSAKeyPair(dll_handle, session, size, pubexp, &pubKey, &privKey, keyLabel, sizeof(keyLabel));
     if (rv == 1) {
-        getPublicKey(dll_handle, session, pubKey, pk, kbuf_pub);
+        getRSAPublicKey(dll_handle, session, pubKey, pk, kbuf_pub);
     } else if (rv == 2) {
         printf ("Key with this ID already exists, returning corresponding pub key");
-        getPublicKey(dll_handle, session, privKey, pk, kbuf_pub);
+        getRSAPublicKey(dll_handle, session, privKey, pk, kbuf_pub);
     }
     logoutFromSession(dll_handle, session);
     closeSession(dll_handle, session);

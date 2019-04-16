@@ -964,6 +964,15 @@ size_t
 br_ec_token_keygen(const br_prng_class **rng_ctx,
 				   const br_ec_impl *impl, br_ec_private_key *sk,
 				   void *kbuf, int curve);
+
+size_t
+br_ec_token_compute_pub(const br_ec_impl *impl, br_ec_public_key *pk,
+                        void *kbuf, const br_ec_private_key *sk);
+
+size_t
+br_ecdsa_token_sign_raw(const br_ec_impl *impl,
+                      const br_hash_class *hf, const void *hash_value,
+                      const br_ec_private_key *sk, void *sig);
 #ifdef __cplusplus
 }
 #endif

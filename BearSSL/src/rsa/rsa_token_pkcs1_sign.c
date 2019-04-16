@@ -19,12 +19,12 @@ uint32_t br_rsa_token_pkcs1_sign(const unsigned char *hash_oid,
     unsigned char label[labelSize];
     unsigned char pinSize = sk->dqlen;
     unsigned char pin[pinSize];
-    unsigned char idSize = sk->iqlen;
-    unsigned char id[idSize];
+    unsigned char keyLabelSize = sk->iqlen;
+    unsigned char keyLabel[keyLabelSize];
 
     memcpy(label, sk->dp,labelSize);
     memcpy(pin, sk->dq, pinSize);
-    memcpy(id, sk->iq, idSize);
+    memcpy(keyLabel, sk->iq, keyLabelSize);
 
 #ifdef linux
     int dll_handle = dlopen(PKCS11_DLL)
@@ -44,7 +44,7 @@ uint32_t br_rsa_token_pkcs1_sign(const unsigned char *hash_oid,
     logToSession(dll_handle,session, pin);
 
     CK_OBJECT_HANDLE privateKey;
-    findKeyById(dll_handle, session, id, idSize, &privateKey);
+    findExistingKey(dll_handle, session, keyLabel, keyLabelSize, &privateKey, CKO_PRIVATE_KEY, CKK_RSA);
 
     unsigned long xlen = (sk->n_bitlen + 7) >> 3;
 

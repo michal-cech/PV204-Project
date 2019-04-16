@@ -53,17 +53,20 @@ int logoutFromSession(HMODULE dll_handle, CK_SESSION_HANDLE session);
 
 int closeSession(HMODULE dll_handle, CK_SESSION_HANDLE session);
 
-int findKeyById(HMODULE dll_handle, CK_SESSION_HANDLE session, void * id, size_t idSize, CK_OBJECT_HANDLE * key);
+int findExistingKey(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_CHAR_PTR keyLabel, size_t keyLabelSize,
+                    CK_OBJECT_HANDLE *key, CK_OBJECT_CLASS class, CK_KEY_TYPE type);
 
 int generateRSAKeyPair(HMODULE dll_handle, CK_SESSION_HANDLE session,
         unsigned size, uint32_t pubexp,
         CK_OBJECT_HANDLE* pubKey, CK_OBJECT_HANDLE* privKey,
-        unsigned char * id, size_t idSize,
-        unsigned char* subject, size_t subSize);
+        unsigned char * keyLabel, size_t keyLabelSize);
 
 
-int getPublicKey(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJECT_HANDLE publicKey,
-        br_rsa_public_key * pk, CK_BYTE * kbuf_pub);
+int getRSAPublicKey(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJECT_HANDLE publicKey,
+                    br_rsa_public_key *pk, CK_BYTE *kbuf_pub);
+
+int getECCPublicKey(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJECT_HANDLE publicKey,
+                    br_ec_public_key *pk, CK_BYTE *kbuf_pub);
 
 int getPublicKeyFromPrivateKey(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJECT_HANDLE privateKey,
                  br_rsa_public_key * pk, CK_BYTE * kbuf_pub);
@@ -74,12 +77,15 @@ int decryptWithKeyOnToken(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJE
         unsigned char * output, size_t * outputSize);
 
 int generateECCKeyPair(HMODULE dll_handle, CK_SESSION_HANDLE session,
-                       unsigned size, uint32_t pubexp,
                        CK_OBJECT_HANDLE* pubKey, CK_OBJECT_HANDLE* privKey,
-                       unsigned char * id, size_t idSize,
-                       unsigned char* subject, size_t subSize);
+                       unsigned char * id, size_t idSize);
 
 int generateRSASignature(HMODULE dll_handle, CK_SESSION_HANDLE hSession,
+                         CK_BYTE_PTR pData, CK_ULONG ulDataLen,
+                         CK_BYTE_PTR pSignature, CK_ULONG_PTR pulSignatureLen,
+                         CK_OBJECT_HANDLE privateKey);
+
+int generateECCSignature(HMODULE dll_handle, CK_SESSION_HANDLE hSession,
                          CK_BYTE_PTR pData, CK_ULONG ulDataLen,
                          CK_BYTE_PTR pSignature, CK_ULONG_PTR pulSignatureLen,
                          CK_OBJECT_HANDLE privateKey);
