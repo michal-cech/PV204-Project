@@ -40,17 +40,29 @@ br_rsa_token_oaep_decrypt(const br_hash_class *dig,
         return 0;
     }
     CK_SESSION_HANDLE session;
-    openLoggedSession(dll_handle, slotID, &session);
-    logToSession(dll_handle,session, pin);
+    if (!openLoggedSession(dll_handle, slotID, &session)){
+        return 0;
+    }
+    if (!logToSession(dll_handle,session, pin)){
+        closeSession(dll_handle, session);
+        return 0;
+    }
 
     CK_OBJECT_HANDLE private_key;
-    findExistingKey(dll_handle, session, keyLabel, keyLabelSize, &private_key, CKO_PRIVATE_KEY, CKK_RSA);
+    if (!findExistingKey(dll_handle, session, keyLabel, keyLabelSize, &private_key, CKO_PRIVATE_KEY, CKK_RSA)){
+        logoutFromSession(dll_handle, session);
+        closeSession(dll_handle, session);
+        return 0;
+    }
     size_t outputSize = 256;
     uint32_t r = 0;
 
     r = decryptWithKeyOnToken(dll_handle, session, private_key, data, *len, data, &outputSize);
 
     r &= br_rsa_oaep_unpad(dig, label, label_len, data, len);
+
+    logoutFromSession(dll_handle, session);
+    closeSession(dll_handle, session);
     return r;
 #endif
 }

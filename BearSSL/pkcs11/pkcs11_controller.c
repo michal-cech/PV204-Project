@@ -217,6 +217,25 @@ int getECCPublicKey(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJECT_HAN
     };
     int rv = getAttribute(session, publicKey, template, 1);
     if (rv == CKR_OK) {
+        pk->qlen = template[0].ulValueLen - 2;
+        memcpy(kbuf_pub, pExponent+2, pk->qlen);
+        pk->q = kbuf_pub;
+        return 1;
+    } else {
+        return 0;
+    }
+
+}
+
+int getECCPrivateKey(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJECT_HANDLE publicKey,
+                    br_ec_public_key *pk, CK_BYTE *kbuf_pub) {
+    FARPROC getAttribute = GetProcAddress(dll_handle, "C_GetAttributeValue");
+    CK_BYTE pExponent[256] = {0};
+    CK_ATTRIBUTE template[] = {
+            {CKA_VALUE, pExponent, 256}
+    };
+    int rv = getAttribute(session, publicKey, template, 1);
+    if (rv == CKR_OK) {
         pk->qlen = template[0].ulValueLen;
         memcpy(kbuf_pub, pExponent, pk->qlen);
         pk->q = kbuf_pub;
@@ -245,6 +264,9 @@ int decryptWithKeyOnToken(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJE
 
     rv = decryptInit(session, &mechanism, privateKey);
     rv = decrypt(session, input, inputSize, input, outputSize);
+    if (rv != CKR_OK) {
+        return 0;
+    }
     return 1;
 }
 
@@ -292,7 +314,6 @@ int generateECCKeyPair(HMODULE dll_handle, CK_SESSION_HANDLE session,
     CK_KEY_TYPE keyType = CKK_EC;
 
     CK_BYTE oidP256[] = {0x06, 0x08, 0x2A, 0x86, 0x48, 0xCE, 0x3D, 0x03, 0x01, 0x07};
-
     CK_ATTRIBUTE publicKeyTemplate[] = {
             {CKA_CLASS, &public, sizeof(public)},
             {CKA_KEY_TYPE, &keyType, sizeof(keyType)},
@@ -308,10 +329,13 @@ int generateECCKeyPair(HMODULE dll_handle, CK_SESSION_HANDLE session,
             {CKA_CLASS, &private, sizeof(private)},
             {CKA_KEY_TYPE, &keyType, sizeof(keyType)},
             {CKA_TOKEN, &true, sizeof(true)},
+         //   {CKA_PRIVATE, &false, sizeof(false)},
             {CKA_PRIVATE, &true, sizeof(true)},
+         //   {CKA_SENSITIVE, &false, sizeof(false)},
             {CKA_SENSITIVE, &true, sizeof(true)},
             {CKA_LABEL, keyLabel, (CK_ULONG)keyLabelSize},
             {CKA_DECRYPT, &false, sizeof(false)},
+        //    {CKA_EXTRACTABLE, &true, sizeof(true)},
             {CKA_SIGN, &true, sizeof(true)}
     };
 

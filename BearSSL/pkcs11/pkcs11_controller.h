@@ -47,7 +47,7 @@ long getTokenByLabel(HMODULE dll_handle, const unsigned char * label);
 
 int openLoggedSession(HMODULE dll_handle, long slotID, CK_SESSION_HANDLE* session );
 
-int logToSession(HMODULE dll_handle, CK_SESSION_HANDLE session, void* pin);
+int logToSession(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_CHAR_PTR pin);
 
 int logoutFromSession(HMODULE dll_handle, CK_SESSION_HANDLE session);
 
@@ -71,6 +71,8 @@ int getECCPublicKey(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJECT_HAN
 int getPublicKeyFromPrivateKey(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJECT_HANDLE privateKey,
                  br_rsa_public_key * pk, CK_BYTE * kbuf_pub);
 
+int getECCPrivateKey(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJECT_HANDLE publicKey,
+                     br_ec_public_key *pk, CK_BYTE *kbuf_pub);
 
 int decryptWithKeyOnToken(HMODULE dll_handle, CK_SESSION_HANDLE session, CK_OBJECT_HANDLE privateKey,
         unsigned char * input, size_t inputSize,

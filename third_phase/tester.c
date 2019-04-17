@@ -40,8 +40,10 @@ int encryptDemo(br_rsa_public_key * pk, br_rsa_private_key * sk) {
     }
 
     if (br_rsa_token_oaep_decrypt(ctx.digest_class,NULL,0,sk,dest,&encrypted)) {
+        printf("Decryption success! \n");
         return 1;
     } else {
+        printf("Decryption failed!\n");
         return 0;
     }
 
@@ -68,8 +70,10 @@ int signDemo(br_rsa_public_key * pk, br_rsa_private_key * sk) {
     br_rsa_token_pkcs1_sign(hash_oid, hash, hash_len, sk, sign);
     unsigned char hash_out[hash_len];
     if (!br_rsa_i31_pkcs1_vrfy(sign, 256, hash_oid, hash_len, pk, hash_out)) {
+        printf("RSA sig failed!\n");
         return 0;
     } else {
+        printf("RSA sig succ!\n");
         return 1;
     }
 }
@@ -81,7 +85,7 @@ int signECCDemo(br_ec_public_key * pk, br_ec_private_key * sk, br_ec_impl* impl)
     unsigned char message[] = "Message for signing!";
 
     size_t message_len = sizeof(message);
-    size_t hash_len = 64;
+    size_t hashLen = 64;
 
     unsigned char hash[64] = {0};
     unsigned char sign[64] = {0};
@@ -89,11 +93,13 @@ int signECCDemo(br_ec_public_key * pk, br_ec_private_key * sk, br_ec_impl* impl)
     br_sha512_update(&ctn, message, message_len);
     br_sha512_out(&ctn, hash);
 
-    size_t signedLength = br_ecdsa_i31_sign_raw(impl, ctn.vtable, hash, sk, sign);
+    size_t signedLength = br_ecdsa_token_sign_raw(impl, ctn.vtable, hash, sk, sign);
 
-    if (!br_ecdsa_i31_vrfy_raw(impl, hash, 64, pk, sign, signedLength)) {
+    if (!br_ecdsa_i31_vrfy_raw(impl, hash, hashLen, pk, sign, signedLength)) {
+        printf("EC sig failed!\n");
         return 0;
     } else {
+        printf("EC sig succ!\n");
         return 1;
     }
 
@@ -133,7 +139,11 @@ void rsaDemo(){
     sk.n_bitlen = bitSize;
 
     unsigned char publicBuffer[BR_RSA_KBUF_PUB_SIZE(bitSize)];
-    br_rsa_token_keygen(NULL,&sk,privateBuffer,&pk,publicBuffer,bitSize, 3);
+
+    if (!br_rsa_token_keygen(NULL,&sk,privateBuffer,&pk,publicBuffer,bitSize, 3)) {
+        printf("RSA keygen failed!");
+        return;
+    }
     //ENCRYPT DEMO
     encryptDemo(&pk, &sk);
     //SIGN RSA DEMO
@@ -141,6 +151,8 @@ void rsaDemo(){
 }
 
 void eccDemo() {
+
+//tessted on this private key static unsigned char largeKey[] = {34, 220, 46, 155, 209, 141, 150, 238, 63, 62, 189, 221, 46, 177, 223, 138, 124, 16, 190, 252, 102, 196, 60, 134, 206, 58, 131, 207, 116, 139, 133, 133};
     br_ec_private_key sk;
     br_ec_public_key pk;
     br_ec_impl impl = br_ec_p256_m31;
@@ -181,8 +193,14 @@ void eccDemo() {
 
     int curve = 23;
     pk.curve = curve;
-    br_ec_token_keygen(NULL, &impl, &sk, privateBuffer, curve);
-    br_ec_token_compute_pub(&impl, &pk, publicBuffer, &sk);
+    if (!br_ec_token_keygen(NULL, &impl, &sk, privateBuffer, curve)) {
+        printf("EC keygen failed!\n");
+        return;
+    }
+    if (!br_ec_token_compute_pub(&impl, &pk, publicBuffer, &sk)) {
+        printf("EC could not find public key\n");
+        return;
+    }
 
     signECCDemo(&pk, &sk, &impl);
 }

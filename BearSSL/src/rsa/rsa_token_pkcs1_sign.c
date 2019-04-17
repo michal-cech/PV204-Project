@@ -40,15 +40,26 @@ uint32_t br_rsa_token_pkcs1_sign(const unsigned char *hash_oid,
     }
 
     CK_SESSION_HANDLE session;
-    openLoggedSession(dll_handle, slotID, &session);
-    logToSession(dll_handle,session, pin);
+    if (!openLoggedSession(dll_handle, slotID, &session)) {
+        return 0;
+    }
+    if (!logToSession(dll_handle,session, pin)) {
+        closeSession(dll_handle, session);
+        return 0;
+    }
 
     CK_OBJECT_HANDLE privateKey;
-    findExistingKey(dll_handle, session, keyLabel, keyLabelSize, &privateKey, CKO_PRIVATE_KEY, CKK_RSA);
+    if (!findExistingKey(dll_handle, session, keyLabel, keyLabelSize, &privateKey, CKO_PRIVATE_KEY, CKK_RSA)) {
+        logoutFromSession(dll_handle, session);
+        closeSession(dll_handle, session);
+        return 0;
+    }
 
     unsigned long xlen = (sk->n_bitlen + 7) >> 3;
 
     if (!br_rsa_pkcs1_sig_pad(hash_oid, hash, hash_len, sk->n_bitlen, x)) {
+        logoutFromSession(dll_handle, session);
+        closeSession(dll_handle, session);
         return 0;
     }
 

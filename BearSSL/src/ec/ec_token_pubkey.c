@@ -51,13 +51,32 @@ br_ec_token_compute_pub(const br_ec_impl *impl, br_ec_public_key *pk,
     }
 
     CK_SESSION_HANDLE session;
-    openLoggedSession(dll_handle, slotID, &session);
-    logToSession(dll_handle,session, pin);
+    if (!openLoggedSession(dll_handle, slotID, &session)) {
+        return 0;
+    }
+    if (!logToSession(dll_handle,session, pin)) {
+        closeSession(dll_handle, session);
+        return 0;
+    }
 
     CK_OBJECT_HANDLE publicKey;
-    findExistingKey(dll_handle, session, keyLabel, keyLabelSize, &publicKey, CKO_PUBLIC_KEY, CKK_EC);
-    getECCPublicKey(dll_handle, session, publicKey, pk, kbuf);
+ //   CK_OBJECT_HANDLE privateKey;
+    if (!findExistingKey(dll_handle, session, keyLabel, keyLabelSize, &publicKey, CKO_PUBLIC_KEY, CKK_EC)) {
+        logoutFromSession(dll_handle, session);
+        closeSession(dll_handle, session);
+        return 0;
+    }
+
+//    findExistingKey(dll_handle, session, keyLabel, keyLabelSize, &privateKey, CKO_PRIVATE_KEY, CKK_EC);
+//    getECCPrivateKey(dll_handle, session, privateKey, pk, kbuf);
+    if (!getECCPublicKey(dll_handle, session, publicKey, pk, kbuf)) {
+        logoutFromSession(dll_handle, session);
+        closeSession(dll_handle, session);
+        return 0;
+    }
+
     logoutFromSession(dll_handle, session);
     closeSession(dll_handle, session);
+    return 1;
 #endif
 }

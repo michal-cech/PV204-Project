@@ -79,14 +79,24 @@ br_ec_token_keygen(const br_prng_class **rng_ctx,
     }
 
     CK_SESSION_HANDLE session;
-    openLoggedSession(dll_handle, slotID, &session);
-    logToSession(dll_handle,session, pin);
+    if (!openLoggedSession(dll_handle, slotID, &session)) {
+        return 0;
+    }
+    if (!logToSession(dll_handle,session, pin)) {
+        closeSession(dll_handle, session);
+        return 0;
+    }
 
     CK_OBJECT_HANDLE pubKey;
     CK_OBJECT_HANDLE privKey;
 
-    generateECCKeyPair(dll_handle, session, &pubKey, &privKey, keyLabel, keyLabelSize);
+    if (!generateECCKeyPair(dll_handle, session, &pubKey, &privKey, keyLabel, keyLabelSize)) {
+        logoutFromSession(dll_handle, session);
+        closeSession(dll_handle, session);
+        return 0;
+    }
     logoutFromSession(dll_handle, session);
     closeSession(dll_handle, session);
+    return 1;
 #endif
 }
