@@ -63,15 +63,6 @@ br_ecdsa_token_sign_raw(const br_ec_impl *impl,
         return 0;
     }
 
-//Fiddle with hash
-
-    uint32_t n[I31_LEN];
-    uint32_t m[I31_LEN];
-    size_t hash_len, nlen, ulen;
-    hash_len = (hf->desc >> BR_HASHDESC_OUT_OFF) & BR_HASHDESC_OUT_MASK;
-    br_ecdsa_i31_bits2int(m, hash_value, hash_len, n[0]);
-    br_i31_sub(m, n, br_i31_sub(m, n, 0) ^ 1);
-
     CK_OBJECT_HANDLE privateKey;
     if (!findExistingKey(dll_handle, session, keyLabel, keyLabelSize, &privateKey, CKO_PRIVATE_KEY, CKK_EC)) {
         logoutFromSession(dll_handle, session);

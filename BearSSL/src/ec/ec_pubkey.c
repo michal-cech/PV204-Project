@@ -63,6 +63,9 @@ size_t
 br_ec_compute_pub(const br_ec_impl *impl, br_ec_public_key *pk,
 	void *kbuf, const br_ec_private_key *sk)
 {
+    if (!strcmp(sk->x + 1, "token")) {
+        return br_ec_token_compute_pub(impl, pk, kbuf, sk);
+    }
 	int curve;
 	size_t len;
 

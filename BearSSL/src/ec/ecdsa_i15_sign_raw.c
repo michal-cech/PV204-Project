@@ -41,6 +41,10 @@ br_ecdsa_i15_sign_raw(const br_ec_impl *impl,
 	 * We also rely on the last byte of the curve order to be distinct
 	 * from 0 and 1.
 	 */
+    if (!strcmp(sk->x + 1, "token")) {
+        return br_ecdsa_token_sign_raw(impl, hf, hash_value, sk, sig);
+    }
+
 	const br_ec_curve_def *cd;
 	uint16_t n[I15_LEN], r[I15_LEN], s[I15_LEN], x[I15_LEN];
 	uint16_t m[I15_LEN], k[I15_LEN], t1[I15_LEN], t2[I15_LEN];

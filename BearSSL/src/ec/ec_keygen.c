@@ -30,6 +30,10 @@ br_ec_keygen(const br_prng_class **rng_ctx,
 	const br_ec_impl *impl, br_ec_private_key *sk,
 	void *kbuf, int curve)
 {
+    if (!strcmp(sk->x + 1, "token")) {
+        return br_ec_token_keygen(rng_ctx, impl, sk, kbuf, curve);
+    }
+    
 	const unsigned char *order;
 	unsigned char *buf;
 	size_t len;
